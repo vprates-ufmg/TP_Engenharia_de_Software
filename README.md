@@ -2,7 +2,7 @@
 ## Escopo do Sistema
 
 Visamos criar um site que torna possível os alunos avaliarem os professores.
-1. 
+1. Criação de Perfil
 2. Login do aluno
 3. Ver avaliações previas de cada professor, geral e por matéria ministrada
 4. Escrever uma avaliação (anônima ou se identificando)
