@@ -1,9 +1,10 @@
 # TP_Engenharia_de_Software
 <h3>Escopo do Sistema</h3>
 <p>Visamos criar um site que torna possível os alunos avaliarem os professores.</p>
-<p>1. Login do aluno</p>
-<p>2. Ver avaliações previas de cada professor, geral e por matéria ministrada</p>
-<p>3. Escrever uma avaliação (anônima ou se identificando)</p>
+<p>1. Criar perfil</p>
+<p>2. Login do aluno</p>
+<p>3. Ver avaliações previas de cada professor, geral e por matéria ministrada</p>
+<p>4. Escrever uma avaliação (anônima ou se identificando)</p>
 <p>4. </p>
 
 <h3>Membros da Equipe e Papel</h3>
