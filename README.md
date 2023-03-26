@@ -17,3 +17,6 @@
 <p>Victor Prates Figueiredo</p>
 
 <h3>Tecnologias</h3>
+<p>Flask</p>
+<p>React</p>
+<p>MongoDB</p>
