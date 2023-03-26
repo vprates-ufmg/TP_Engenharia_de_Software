@@ -1,18 +1,19 @@
 # TP_Engenharia_de_Software
-<h3>Escopo do Sistema</h3>
-Visamos criar um site que torna possível os alunos avaliarem os professores.\n
-1. Login do aluno\n
-2. Ver avaliações previas de cada professor, geral e por matéria ministrada\n
-3. Escrever uma avaliação (anônima ou se identificando)\n
+## Escopo do Sistema
+
+Visamos criar um site que torna possível os alunos avaliarem os professores.
+1. Login do aluno
+2. Ver avaliações previas de cada professor, geral e por matéria ministrada
+3. Escrever uma avaliação (anônima ou se identificando)
 4. 
 
-<h3>Membros da Equipe e Papel</h3>
-<h5>Frontend</h5>
-Lucas Emanuel Elias Alves\n
-Matheus Flavio Goncalves Silva\n
+## Membros da Equipe e Papel
+### Frontend
+- Lucas Emanuel Elias Alves
+- Matheus Flavio Goncalves Silva
 
-<h5>Backend</h5>
-Michel Barros da Fonseca
-Victor Prates Figueiredo
+### Backend
+- Michel Barros da Fonseca
+- Victor Prates Figueiredo
 
-<h3>Tecnologias</h3>
+## Tecnologias
