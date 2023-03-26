@@ -1,22 +1,23 @@
 # TP_Engenharia_de_Software
-<h3>Escopo do Sistema</h3>
-<p>Visamos criar um site que torna possível os alunos avaliarem os professores.</p>
-<p>1. Criar perfil</p>
-<p>2. Login do aluno</p>
-<p>3. Ver avaliações previas de cada professor, geral e por matéria ministrada</p>
-<p>4. Escrever uma avaliação (anônima ou se identificando)</p>
-<p>4. </p>
+## Escopo do Sistema
 
-<h3>Membros da Equipe e Papel</h3>
-<h5>Frontend</h5>
-<p>Lucas Emanuel Elias Alves</p>
-<p>Matheus Flavio Goncalves Silva</p>
+Visamos criar um site que torna possível os alunos avaliarem os professores.
+1. 
+2. Login do aluno
+3. Ver avaliações previas de cada professor, geral e por matéria ministrada
+4. Escrever uma avaliação (anônima ou se identificando)
+5. 
 
-<h5>Backend</h5>
-<p>Michel Barros da Fonseca</p>
-<p>Victor Prates Figueiredo</p>
+## Membros da Equipe e Papel
+### Frontend
+- Lucas Emanuel Elias Alves
+- Matheus Flavio Goncalves Silva
 
-<h3>Tecnologias</h3>
-<p>Flask</p>
-<p>React</p>
-<p>MongoDB</p>
+### Backend
+- Michel Barros da Fonseca
+- Victor Prates Figueiredo
+
+## Tecnologias
+- Flask
+- React
+- MongoDB
