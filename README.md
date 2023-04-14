@@ -76,3 +76,5 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
 - Como usuário, eu gostaria de ajudar o projeto por meio de doações.
 - Como usuário, eu gostaria de acessar o site por um app mobile disponível na Play Store.
 - Como usuário, eu gostaria de deletar minha conta, dados e publicações do site.
+- Como administrador, eu gostaria de apagar posts de qualquer usuário
+- Como administrador, eu gostaria de banir um usuário
