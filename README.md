@@ -23,53 +23,56 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
 - MongoDB
 
 # Histórias da sprint  
-  
-## Criação da página inicial  
+
+## Como usuário, gostaria de acessar a página inicial do site
 ### Tarefas
--  Configurar base de arquivos projeto.
-- Criar rotas básicas do Flask para o uso dos templates.
-- Implementar caixa de texto básica que envia dados para uma api interna.
+- Criar o template base da página inicial. [Lucas]
+- Criar rotas básicas do Flask para o uso do template. [Victor]
+- Implementar um formulário com caixa de texto básica que envia dados para uma api interna. [Matheus]
+- Implementar a api interna e guardar os dados no MongoDB como teste. [Michel]
   
-## Criação de perfil de usuário  
+## Como usuário, gostaria de criar um perfil anônimo
 ### Tarefas
--  Criação da arte e página da página de login/registro.
-- Criação da coleção do MongoDB que representa os usuários.
-- Criação do usuário com os dados fornecidos e senha segura.
-- Implementação de cookies para salvar a sessão do usuário.
+- Criação da arte da página de login/registro. [Lucas]
+- Implementação do template usado para a página de login/registro. [Matheus]
+- Criação da coleção do MongoDB que representa os usuários. [Michel]
+- Criação do usuário com os dados fornecidos e senha segura. [Michel]
+- Implementação de cookies para salvar a sessão do usuário. [Victor]
   
-## Escrever uma avaliação de professor que ministrou uma máteria em um período específico  
+## Como usuário, gostaria de avaliar anonimamente um professor que ministrou uma matéria
 ### Tarefas 
--  Criar a coleção representando a publicação no banco de dados.
-- Verificar as matérias ministradas e os professores que ministrou nos últimos 3 semestres a partir de dados disponibilizados no SIGA.
--  Fazer a arte da página inicial com a caixa de texto.
-- Testar uma chamada para a API com o conteúdo da avaliação.
-- Anonimizar a publicação.
+- Criar a coleção representando a publicação no banco de dados. [Michel]
+- Verificar as matérias ministradas e os professores que ministrou nos últimos 3 semestres a partir de dados disponibilizados no SIGA. [Michel]
+- Fazer a arte da página com o formulário com a caixa de texto da avaliação. [Lucas]
+- Fazer o template da página com o formulário com a caixa de texto da avaliação. [Matheus]
+- Testar uma chamada para a API com o conteúdo da avaliação. [Victor]
+- Anonimizar a publicação. [Victor]
   
-## Sistema de ordenação de avaliações  
+## Como usuário, gostaria de encontrar facilmente avaliações existentes de acordo com um critério meu
 ### Tarefa 
--  Implementar rota da API que retorna as avaliações que condizem com o filtro, e ordenado da maneira desejada.
-- Criar arte da interface de ordenação.
-- Implementar a interface de ordenação.
+- Implementar rota da API que retorna as avaliações que condizem com o filtro, e ordenado da maneira desejada. [Michel]
+- Criar arte da interface de ordenação. [Lucas]
+- Implementar a interface de ordenação. [Matheus]
   
-## Sistema de relevância de avaliações (upvote/downvote)  
+## Como usuário, gostaria de marcar uma avaliação anônima como relevante ou não relevante
 ### Tarefas 
--  Criar arte dos botões de vote nas avaliações.
-- Implementar o conceito nas publicações.
-- Adicionar saldo de upvotes às publicações no banco de dados.
-- Adicionar vote como uma das possibilidades de ordenação das avaliações.
+- Criar arte dos botões de vote nas avaliações. [Lucas]
+- Implementar os botões de upvote nas publicações. [Matheus]
+- Adicionar saldo de upvotes às publicações no banco de dados. [Michel]
+- Adicionar vote como uma das possibilidades de ordenação das avaliações. [Victor]
   
   
   
 # Histórias do Backlog  
-- Criação de perfil e login por plataformas externas (Twitter, Facbeook, etc..)  
-- Suporte a anexos nas avaliações (fotos, vídeos, documentos PDF)  
-- Suporte à edição de avaliações.  
-- Suporte a comentários nas avaliações.  
-- Suporte a moderação de avaliações (evitar trolls)  
-- Suporte à formatação de avaliações em Markdown.  
-- Adicionar prêmios que podem ser dados a uma avaliação específica (como um superlike)  
-- Suporte a compartilhamento de avaliações específicas para outras redes sociais  
-- Adicionar suporte a plataformas mobile (web browser)  
-- Adicionar suporte a doação para o projeto.  
-- Acesso via um app mobile disponível na Play Store .
-- Possibilidade de deletar a conta de usuário.
+- Como usuário, eu gostaria de criar perfil e fazer login por plataformas externas (Twitter, Facbeook, etc..)  
+- Como usuário, eu gostaria de adicionar anexos às avaliações (fotos, vídeos, documentos PDF)  
+- Como usuário, eu gostaria de editar minhas avaliações.  
+- Como usuário, eu gostaria de adicionar comentários nas avaliações.  
+- Como usuário, eu gostaria de reportar avaliações que abusam do sistema.  
+- Como usuário, eu gostaria de formatar as minhas avaliações usando Markdown.
+- Como usuário, eu gostaria de adicionar prêmios a uma avaliação específica (como um superlike)  
+- Como usuário, eu gostaria de compartilhar avaliações específicas com outras redes sociais  
+- Como usuário, eu gostaria de acessar o site em uma plataforma mobile (celulares, tablets)
+- Como usuário, eu gostaria de ajudar o projeto por meio de doações.
+- Como usuário, eu gostaria de acessar o site por um app mobile disponível na Play Store.
+- Como usuário, eu gostaria de deletar minha conta, dados e publicações do site.
