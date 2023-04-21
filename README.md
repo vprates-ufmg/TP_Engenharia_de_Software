@@ -18,9 +18,19 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
 - Victor Prates Figueiredo
 
 ## Tecnologias
-- Flask
+- Quart
 - React
 - MongoDB
+
+# Instalação
+```bash
+    git clone https://github.com/vprates-ufmg/TP_Engenharia_de_Software
+    cd TP_Engenharia_de_Software
+    python3 -m pip install -r requirements.txt
+    cp .env_example .env
+    nano .env
+    python3 main.py
+```
 
 # Histórias da sprint  
   
