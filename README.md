@@ -32,6 +32,7 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
     python3 main.py
 ```
 
+## Design do Front-End
 Link do Figma com o desing das páginas
 <br>
 <a href="https://www.figma.com/file/6ZZET6D42xeVovtNnFhwm3/TP1_Eng_Soft?type=design&node-id=0%3A1&t=GMHt6m7Ct4FRkFFp-1">Figma Review De Profs</a>
