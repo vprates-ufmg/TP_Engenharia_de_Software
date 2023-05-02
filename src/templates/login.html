@@ -1,0 +1,15 @@
+{% if message %}
+{{ message }}
+{% endif %}
+
+<form id="login-form" action="/login" method="post">
+  <label for="username">Nome de usuário:</label>
+  <input type="text" name="username" id="username">
+  <label for="password_hash">Senha:</label> <!-- uso temporario -->
+  <input type="password" name="password_hash" id="password_hash"> <!-- uso temporario -->
+  <!-- descomentar os abaixo apos implementar uma função em js pra gerar o hash da senha -->
+  <!--  <label for="password">Senha:</label>-->
+  <!--  <input type="password" name="password" id="password">-->
+  <!--  <input type="hidden" name="password_hash" id="password-hash">-->
+  <button type="submit">Entrar</button>
+</form>
