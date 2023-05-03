@@ -1,4 +1,4 @@
-from quart import Quart, request, render_template, make_response, flash, redirect, url_for
+from quart import Quart, request, render_template, make_response, redirect, url_for
 from beanie import init_beanie
 from src.db.Session import Session
 from src.db.User import User
@@ -83,5 +83,15 @@ async def register():
 
       return await render_template("register.html")
 
+@app.route("/logout", methods=['GET'])
+async def logout():
+   session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+   if session is None:
+      return redirect(url_for("index"))
+   else:
+      await session.delete_session()
+      response = await make_response(redirect(url_for("index")))
+      response.set_cookie("index_message", "Desconectado com sucesso.")
+      return response
 
 app.run()

@@ -19,10 +19,7 @@ class Session(Document):
         """
         datetime_obj = datetime.fromisoformat(self.expire_date)
         if datetime.utcnow() - datetime_obj > timedelta(days=DAYS_TO_EXPIRE):
-            await self.delete()
-            linked_user = await User.find({"user_id": self.linked_user_id}).first_or_none()
-            linked_user.sessions.remove(self.session_id)
-            await linked_user.save()
+            await self.delete_session()
             return True
         return False
 
@@ -34,6 +31,16 @@ class Session(Document):
         new_expire_date = datetime.utcnow() + timedelta(days=DAYS_TO_EXPIRE)
         self.expire_date = new_expire_date.isoformat()
         await self.save()
+
+    async def delete_session(self):
+        """
+        Deleta a sessão do banco de dados.
+        :return: None
+        """
+        await self.delete()
+        linked_user = await User.find({"user_id": self.linked_user_id}).first_or_none()
+        linked_user.sessions.remove(self.session_id)
+        await linked_user.save()
 
     @classmethod
     async def create_session(cls, user: User):
