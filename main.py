@@ -1,6 +1,5 @@
-from quart import Quart, request, render_template, make_response
+from quart import Quart, request, render_template, make_response, flash, redirect, url_for
 from beanie import init_beanie
-from src.db.HomeTest import HomeTest
 from src.db.Session import Session
 from src.db.User import User
 from src.db.parse_login import create_mongodb_uri
@@ -9,7 +8,6 @@ import dotenv
 import os
 
 app = Quart("review_professores", template_folder="src/templates")
-
 
 @app.before_serving
 async def init_database():
@@ -23,24 +21,30 @@ async def init_database():
 
    uri = create_mongodb_uri(mongodb_server, mongodb_port, mongodb_username, mongodb_password, mongodb_auth_db)
    client = AsyncIOMotorClient(uri)
-   await init_beanie(getattr(client, mongodb_database), document_models=[HomeTest, User, Session])
+   await init_beanie(getattr(client, mongodb_database), document_models=[User, Session])
 
 @app.route("/")
-async def hello_world():
-    n_entries = len(await HomeTest.find({}).to_list())
-    return f"<p>Hello, World! There are {n_entries} entries in the database.</p>"
+async def index():
+   message = request.cookies.get("index_message")
+   if message is None:
+      return await render_template("index.html")
+   else:
+      response = await make_response(await render_template("index.html", message=message))
+      response.delete_cookie("index_message")
+      return response
 
 @app.route("/login", methods=['GET', 'POST'])
 async def login():
    if request.method == "POST":
-      username = (await request.form)['username']
+      username = (await request.form)['username'].strip()
       password_hash = (await request.form)['password_hash']
-      user = await User.find({"username": username}).first_or_none()
+      user = await User.find({"safe_username": username.lower()}).first_or_none()
       if user is not None:
          if user.password_hash == password_hash:
             new_session = await Session.create_session(user)
-            response = await make_response(render_template("index.html", message="Logado com sucesso!"))
+            response = await make_response(redirect(url_for("index")))
             response.set_cookie("current_session", new_session.session_id)
+            response.set_cookie("index_message", "Logado com sucesso!")
             return response
 
       return await render_template("login.html", message="Credenciais incorretas.")
@@ -49,8 +53,35 @@ async def login():
       if session is not None:
          if not (await session.is_expired()):
             await session.renew()
-            return await render_template("index.html", message="Você já está logado!")
+            response = await make_response(redirect(url_for("index")))
+            response.set_cookie("index_message", "Você já está logado!")
+            return response
 
       return await render_template("login.html")
+
+@app.route("/register", methods=['GET', 'POST'])
+async def register():
+   if request.method == "POST":
+      username: str = (await request.form)['username'].strip()
+      password_hash = (await request.form)['password_hash']
+
+      user = await User.find({"safe_username": username.lower()}).first_or_none()
+      if user is not None:
+         return await render_template("register.html", message="Nome de usuário não disponível.")
+
+      await User.create_user(username, password_hash)
+      return await render_template("login.html", message="Conta criada com sucesso. Você pode entrar.")
+
+   else:
+      session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+      if session is not None:
+         if not (await session.is_expired()):
+            await session.renew()
+            response = await make_response(redirect(url_for("index")))
+            response.set_cookie("index_message", "Você já está logado!")
+            return response
+
+      return await render_template("register.html")
+
 
 app.run()
