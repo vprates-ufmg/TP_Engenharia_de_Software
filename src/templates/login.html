@@ -2,14 +2,37 @@
 {{ message }}
 {% endif %}
 
+<link rel="stylesheet" type=text/css href="{{url_for('static', filename='css/forms.css')}}">
+
+<body>
+  <div class='form-box'>
+    <div class='header'>
+      <img src="{{url_for('static', filename='images/login-icon.png')}}" alt="Ícone de login"></img>
+      <p>Profs' Review - Login</p>
+    </div>
+    <form action="/login" class='form' method="POST">
+      <input type='text' name="username" id="username" placeholder='Digite seu usuário'></input>
+      <input type='password' name="password_hash" id="password_hash" placeholder='Digite sua senha'></input>
+    </form>
+    <div class='footer'>
+      <button class='form-button register'>Registar</button>
+      <button class='form-button login'>Login</button>
+    </div>
+  </div>
+</body>
+
+<!-- Falta criar a função de hash e integrar com o backend -->
+<!-- Apenas parte visual "feita" -->
+
+<!--
 <form id="login-form" action="/login" method="post">
   <label for="username">Nome de usuário:</label>
-  <input type="text" name="username" id="username">
-  <label for="password_hash">Senha:</label> <!-- uso temporario -->
-  <input type="password" name="password_hash" id="password_hash"> <!-- uso temporario -->
-  <!-- descomentar os abaixo apos implementar uma função em js pra gerar o hash da senha -->
-  <!--  <label for="password">Senha:</label>-->
-  <!--  <input type="password" name="password" id="password">-->
-  <!--  <input type="hidden" name="password_hash" id="password-hash">-->
-  <button type="submit">Entrar</button>
-</form>
+  <input type="text" name="username" id="username"> -->
+<!-- <label for="password_hash">Senha:</label> --> <!-- uso temporario -->
+<!-- <input type="password" name="password_hash" id="password_hash"> --> <!-- uso temporario -->
+<!-- descomentar os abaixo apos implementar uma função em js pra gerar o hash da senha -->
+<!--  <label for="password">Senha:</label>-->
+<!--  <input type="password" name="password" id="password">-->
+<!--  <input type="hidden" name="password_hash" id="password-hash">-->
+<!-- <button type="submit">Entrar</button> -->
+<!-- </form> -->

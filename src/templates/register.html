@@ -2,15 +2,37 @@
 {{ message }}
 {% endif %}
 
-<form method="POST" action="/register">
+<link rel="stylesheet" type=text/css href="{{url_for('static', filename='css/forms.css')}}">
+
+<body>
+    <div class="form-box">
+        <div class='header'>
+            <img src="{{url_for('static', filename='images/register-icon.png')}}" alt="Ícone de login"></img>
+            <p>Profs' Review - Registro</p>
+        </div>
+        <form action="/register" class='form' method="POST">
+            <input type='text' placeholder='Digite seu usuário'></input>
+            <input type='password' placeholder='Digite sua senha'></input>
+        </form>
+        <div class='footer'>
+            <button class='formBtn return'>Voltar</button>
+            <button class='formBtn create'>Cadastrar</button>
+        </div>
+    </div>
+</body>
+
+<!-- Falta criar a função de hash e integrar com o backend -->
+<!-- Apenas parte visual "feita" -->
+
+<!-- <form method="POST" action="/register">
     <label for="username">Nome de Usuário:</label>
     <input type="text" name="username" id="username" required>
-    <label for="password_hash">Senha:</label> <!-- uso temporario -->
-    <input type="password" name="password_hash" id="password_hash" required> <!-- uso temporario -->
-    <!-- descomentar os abaixo apos implementar uma função em js pra gerar o hash da senha -->
-    <!-- also verificar se a senha tem numeros letras simbolos -->
-    <!--  <label for="password">Senha:</label>-->
-    <!--  <input type="password" name="password" id="password" required>-->
-    <!--  <input type="hidden" name="password_hash" id="password-hash">-->
-    <button type="submit">Registrar</button>
-</form>
+    <label for="password_hash">Senha:</label> --> <!-- uso temporario -->
+<!-- <input type="password" name="password_hash" id="password_hash" required> --> <!-- uso temporario -->
+<!-- descomentar os abaixo apos implementar uma função em js pra gerar o hash da senha -->
+<!-- also verificar se a senha tem numeros letras simbolos -->
+<!--  <label for="password">Senha:</label>-->
+<!--  <input type="password" name="password" id="password" required>-->
+<!--  <input type="hidden" name="password_hash" id="password-hash">-->
+<!-- <button type="submit">Registrar</button> -->
+<!-- </form> -->

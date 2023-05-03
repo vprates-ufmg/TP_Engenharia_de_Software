@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import dotenv
 import os
 
-app = Quart("review_professores", template_folder="src/templates")
+app = Quart("review_professores", template_folder="src/templates", static_folder="src/static")
 
 
 @app.before_serving
