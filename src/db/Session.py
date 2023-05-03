@@ -7,6 +7,7 @@ from src.db.User import User
 
 DAYS_TO_EXPIRE = 60
 
+
 class Session(Document):
     session_id: Indexed(str, unique=True)
     expire_date: str

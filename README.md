@@ -32,6 +32,11 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
     python3 main.py
 ```
 
+# Formatação do código
+```bash
+    find . -name '*.py' -print0 | xargs -0 python3 -m black --line-length=120
+```
+
 ## Design do Front-End
 Link do Figma com o desing das páginas
 <br>
