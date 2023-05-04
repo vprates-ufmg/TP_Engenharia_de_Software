@@ -42,70 +42,81 @@ async def login():
     Retorna 401 caso contrário.
     Retorna 409 caso o usuário já estiver logado.
     """
-    if request.method == "POST":
-        session_cookie = request.cookies.get("current_session")
-        if session_cookie is not None:
-            session = await Session.find({"session_id": session_cookie}).first_or_none()
-            if session is not None:
-                user = await User.find({"user_id": session.linked_user_id}).first_or_none()
-                if not (await session.is_expired()):
-                    await session.renew()
-                    user = UserData(user.user_id, user.username)
-                    return asdict(UserResponse(False, "Você já está logado!", user)), 409
-
-        data = await request.json
-        if data is None:
-            return bad_request()
-
-        username = data.get("username", "").strip()
-        password_hash = data.get("password_hash", "")
-
-        if not username or not password_hash:
-            return bad_request()
-
-        user = await User.find({"safe_username": username.lower()}).first_or_none()
-        if user is not None:
-            if user.password_hash == password_hash:
-                new_session = await Session.create_session(user)
+    session_cookie = request.cookies.get("current_session")
+    if session_cookie is not None:
+        session = await Session.find({"session_id": session_cookie}).first_or_none()
+        if session is not None:
+            user = await User.find({"user_id": session.linked_user_id}).first_or_none()
+            if not (await session.is_expired()):
+                await session.renew()
                 user = UserData(user.user_id, user.username)
-                response = UserResponse(True, "", user)
-                out = jsonify(asdict(response))
-                out.set_cookie("current_session", new_session.session_id)
-                return out, 200
+                return asdict(UserResponse(False, "Você já está logado!", user)), 409
 
-        return asdict(UserResponse(False, "Credenciais incorretas.", None)), 401
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    username = data.get("username", "").strip()
+    password_hash = data.get("password_hash", "")
+
+    if not username or not password_hash:
+        return bad_request()
+
+    user = await User.find({"safe_username": username.lower()}).first_or_none()
+    if user is not None:
+        if user.password_hash == password_hash:
+            new_session = await Session.create_session(user)
+            user = UserData(user.user_id, user.username)
+            response = UserResponse(True, "Logado com sucesso.", user)
+            out = jsonify(asdict(response))
+            out.set_cookie("current_session", new_session.session_id)
+            return out, 200
+
+    return asdict(UserResponse(False, "Credenciais incorretas.", None)), 401
 
 
 @app.route("/register", methods=["POST"])
 async def register():
     """
-    Registra o usuário no sistema. Caso já existir um usuário de mesmo nome, retorna 409.
-    :return: renderiza o template do register.html
+    Registra o usuário no sistema.
+    Caso já existir um usuário de mesmo nome, retorna 409.
+    Caso os requisitos de senha e username não forem cumpridos, retorna 400.
     """
-    if request.method == "POST":
-        username: str = (await request.form)["username"].strip()
-        if username == "":
-            return await render_template("register.html", message="Nome de usuário não pode ser vazio.")
-
-        password_hash = (await request.form)["password_hash"]
-
-        user = await User.find({"safe_username": username.lower()}).first_or_none()
-        if user is not None:
-            return await render_template("register.html", message="Nome de usuário não disponível.")
-
-        await User.create_user(username, password_hash)
-        return await render_template("login.html", message="Conta criada com sucesso. Você pode entrar.")
-
-    else:
-        session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    session_cookie = request.cookies.get("current_session")
+    if session_cookie is not None:
+        session = await Session.find({"session_id": session_cookie}).first_or_none()
         if session is not None:
+            user = await User.find({"user_id": session.linked_user_id}).first_or_none()
             if not (await session.is_expired()):
                 await session.renew()
-                response = await make_response(redirect(url_for("index")))
-                response.set_cookie("index_message", "Você já está logado!")
-                return response
+                user = UserData(user.user_id, user.username)
+                return asdict(UserResponse(False, "Você já está logado!", user)), 409
 
-        return await render_template("register.html")
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    username = data.get("username", "").strip()
+    password_hash = data.get("password_hash", "")
+
+    if not username or not password_hash:
+        return bad_request()
+
+    if len(username) < 4:
+        return asdict(GenericResponse(False, "O nome de usuário deve conter no mínimo 4 caracteres.")), 400
+
+    user = await User.find({"safe_username": username.lower()}).first_or_none()
+    if user is not None:
+        return asdict(UserResponse(False, "Já existe um usuário com esse nome.", None)), 409
+
+    user_db = await User.create_user(username, password_hash)
+    new_session = await Session.create_session(user_db)
+    user = UserData(user_db.user_id, user_db.username)
+    response = UserResponse(True, "Conta registrada com sucesso.", user)
+    out = jsonify(asdict(response))
+    out.set_cookie("current_session", new_session.session_id)
+    return out, 200
+
 
 
 @app.route("/logout", methods=["GET"])
