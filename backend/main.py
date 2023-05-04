@@ -1,6 +1,9 @@
 from dataclasses import asdict
+from datetime import timedelta
+
 from quart import Quart, request, jsonify
 from beanie import init_beanie
+from quart_rate_limiter import RateLimiter, rate_limit, rate_exempt
 from api_responses import UserData, UserResponse, GenericResponse
 from db.Session import Session
 from db.User import User
@@ -10,7 +13,7 @@ import dotenv
 import os
 
 app = Quart("review_professores")
-
+rate_limiter = RateLimiter(app)
 
 @app.before_serving
 async def init_database():
@@ -32,6 +35,7 @@ def bad_request():
 
 
 @app.route("/login", methods=["POST"])
+@rate_limit(5, timedelta(minutes=1))
 async def login():
     """
     Verifica as credenciais enviadas e faz login.
@@ -72,6 +76,7 @@ async def login():
 
 
 @app.route("/register", methods=["POST"])
+@rate_limit(3, timedelta(minutes=1))
 async def register():
     """
     Registra o usuário no sistema.
@@ -114,6 +119,7 @@ async def register():
 
 
 @app.route("/logout", methods=["GET"])
+@rate_exempt
 async def logout():
     """
     Desconecta o usuário do sistema, deletando a sessão salva.
