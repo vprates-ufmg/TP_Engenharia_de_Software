@@ -90,9 +90,26 @@ span.error {
     margin-bottom: 20px;
 }
 
+.form-body .password-line input[type="text"] {
+    margin: 0;
+}
 
 .form-body input:focus {
     outline: none;
+}
+
+.password-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.password-line i {
+    position:absolute;
+    align-self: center;
+    margin-right: 15px;
+    font-size: 14pt;
+    z-index: 2;
 }
 
 .form-body {

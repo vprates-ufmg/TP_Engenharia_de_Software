@@ -1,4 +1,5 @@
 <link rel="stylesheet" type=text/css href="{{url_for('static', filename='css/forms.css')}}">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 
 <body>
   <div class='form-box'>
@@ -11,8 +12,11 @@
     </div>
     <div class="form-body">
       <form action="/login" class='form' id="form" method="POST">
-        <input type='text' name="username" id="username" placeholder='Digite seu usuário'></input>
-        <input type='password' name="password" id="password" placeholder='Digite sua senha'></input>
+        <input type='text' name="username" id="username" placeholder='Digite seu usuário' minlength="4" required></input>
+        <div class="password-line">
+          <input type='password' name="password" id="password" placeholder='Digite sua senha' minlength="6" required></input>
+          <i class="far fa-eye" id="toggle-password"></i>
+        </div>
         <input type="hidden" name="password_hash" id="password-hash">
         <button class='form-button' type="submit">Login</button>
         <p>Não possui conta? <a href='/register'>Registre-se</a> agora</p>
@@ -20,21 +24,5 @@
     </div>
   </div>
   <script src="../static/js/hash.js"></script>
+  <script src="../static/js/change-visibility.js"></script>
 </body>
-
-
-<!-- Falta criar a função de hash e integrar com o backend -->
-<!-- Apenas parte visual "feita" -->
-
-<!--
-<form id="login-form" action="/login" method="post">
-  <label for="username">Nome de usuário:</label>
-  <input type="text" name="username" id="username"> -->
-<!-- <label for="password_hash">Senha:</label> --> <!-- uso temporario -->
-<!-- <input type="password" name="password_hash" id="password_hash"> --> <!-- uso temporario -->
-<!-- descomentar os abaixo apos implementar uma função em js pra gerar o hash da senha -->
-<!--  <label for="password">Senha:</label>-->
-<!--  <input type="password" name="password" id="password">-->
-<!--  <input type="hidden" name="password_hash" id="password-hash">-->
-<!-- <button type="submit">Entrar</button> -->
-<!-- </form> -->

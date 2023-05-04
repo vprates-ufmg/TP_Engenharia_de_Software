@@ -83,11 +83,6 @@ async def register():
             return await render_template("register.html", message="Nome de usuário não pode ser vazio.")
 
         password_hash = (await request.form)["password_hash"]
-        if(password_hash == "0"):
-            return await render_template("register.html", message="Senha não pode ser vazia.")
-        else:
-            if(password_hash == "1"):
-                return await render_template("register.html", message="Senha precisa ter no mínimo 6 caracteres.")
 
         user = await User.find({"safe_username": username.lower()}).first_or_none()
         if user is not None:

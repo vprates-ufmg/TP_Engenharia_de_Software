@@ -2,14 +2,8 @@ const form = document.getElementById('form');
 const passwordInput = document.getElementById('password');
 const passwordHashInput = document.getElementById('password-hash');
 
-async function generatePasswordHash(password) {
-    if(password == "") {
-      return "0";
-    }
-    if(password.length < 6) {
-      return "1";
-    }
 
+async function generatePasswordHash(password) {
     const encoder = new TextEncoder();
     const data = encoder.encode(password);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
