@@ -10,7 +10,6 @@ class GenericResponse:
 class UserData:
     id: str
     username: str
-    session: str
 
 @dataclass
 class UserResponse:

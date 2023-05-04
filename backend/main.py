@@ -38,9 +38,21 @@ async def login():
     """
     Verifica as credenciais enviadas e faz login.
     Esse endpoint deve receber um application/json com os campos "username" e "password_hash"
-    Retorna um LoginResponse com o objeto UserResponse caso as credenciais baterem. Retorna 401 caso contrário.
+    Retorna um LoginResponse com o objeto UserResponse caso as credenciais baterem.
+    Retorna 401 caso contrário.
+    Retorna 409 caso o usuário já estiver logado.
     """
     if request.method == "POST":
+        session_cookie = request.cookies.get("current_session")
+        if session_cookie is not None:
+            session = await Session.find({"session_id": session_cookie}).first_or_none()
+            if session is not None:
+                user = await User.find({"user_id": session.linked_user_id}).first_or_none()
+                if not (await session.is_expired()):
+                    await session.renew()
+                    user = UserData(user.user_id, user.username)
+                    return asdict(UserResponse(False, "Você já está logado!", user)), 409
+
         data = await request.json
         if data is None:
             return bad_request()
@@ -55,17 +67,19 @@ async def login():
         if user is not None:
             if user.password_hash == password_hash:
                 new_session = await Session.create_session(user)
-                user = UserData(user.user_id, user.username, new_session.session_id)
+                user = UserData(user.user_id, user.username)
                 response = UserResponse(True, "", user)
-                return asdict(response), 200
+                out = jsonify(asdict(response))
+                out.set_cookie("current_session", new_session.session_id)
+                return out, 200
 
         return asdict(UserResponse(False, "Credenciais incorretas.", None)), 401
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["POST"])
 async def register():
     """
-    Registra o usuário no sistema. Caso já existir um usuário de mesmo nome, retorna erro. Se já estiver logado, redireciona para o index.html.
+    Registra o usuário no sistema. Caso já existir um usuário de mesmo nome, retorna 409.
     :return: renderiza o template do register.html
     """
     if request.method == "POST":
