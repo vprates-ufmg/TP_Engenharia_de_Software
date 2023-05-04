@@ -1,7 +1,3 @@
-{% if message %}
-{{ message }}
-{% endif %}
-
 <link rel="stylesheet" type=text/css href="{{url_for('static', filename='css/forms.css')}}">
 
 <body>
@@ -9,17 +5,23 @@
         <div class='header'>
             <img src="{{url_for('static', filename='images/register-icon.png')}}" alt="Ícone de login"></img>
             <p>Profs' Review - Registro</p>
+            {% if message %}
+                <span class="error">{{ message }}</span>
+            {% endif %}
         </div>
-        <form action="/register" class='form' method="POST">
-            <input type='text' placeholder='Digite seu usuário'></input>
-            <input type='password' placeholder='Digite sua senha'></input>
-        </form>
-        <div class='footer'>
-            <button class='formBtn return'>Voltar</button>
-            <button class='formBtn create'>Cadastrar</button>
+        <div class="form-body">
+            <form action="/register" class='form' method="POST" id="form">
+                <input type='text' name="username" id="username" placeholder='Escolha seu usuário'></input>
+                <input type='password' name="password" id="password" placeholder='Escolha sua senha'></input>
+                <input type="hidden" name="password_hash" id="password-hash">
+                <button class='form-button' type="submit">Cadastrar</button>
+                <p>Já possui conta? <a href='/login'>Entre</a> agora</p>
+            </form>
         </div>
     </div>
+    <script src="../static/js/hash.js"></script>
 </body>
+
 
 <!-- Falta criar a função de hash e integrar com o backend -->
 <!-- Apenas parte visual "feita" -->
