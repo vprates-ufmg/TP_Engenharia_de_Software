@@ -2,7 +2,7 @@ const form = document.getElementById('form');
 const passwordInput = document.getElementById('password');
 const passwordHashInput = document.getElementById('password-hash');
 
-
+// Função responsável por gerar o hash da senha (autoral enquanto não temos a integração de react + flask feita)
 async function generatePasswordHash(password) {
     const encoder = new TextEncoder();
     const data = encoder.encode(password);
@@ -12,7 +12,6 @@ async function generatePasswordHash(password) {
     return hashHex;
   }
   
-
 form.addEventListener('submit', async (event) => {
   const password = passwordInput.value;
   const passwordHash = await generatePasswordHash(password);
