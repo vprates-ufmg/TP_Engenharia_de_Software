@@ -1,5 +1,9 @@
-from quart import Quart, request, render_template, make_response, redirect, url_for
+from dataclasses import asdict
+
+from quart import Quart, request, render_template, make_response, redirect, url_for, jsonify
 from beanie import init_beanie
+
+from api_responses import UserData, UserResponse, GenericResponse
 from db.Session import Session
 from db.User import User
 from db.parse_login import create_mongodb_uri
@@ -25,35 +29,37 @@ async def init_database():
     await init_beanie(getattr(client, mongodb_database), document_models=[User, Session])
 
 
-@app.route("/login", methods=["GET", "POST"])
+def bad_request():
+    return asdict(GenericResponse(False, "Bad Request")), 400
+
+
+@app.route("/login", methods=["POST"])
 async def login():
     """
-    Renderiza a página de login. Se o usuário já estiver logado, redireciona para o index.
-    :return: renderiza o template do login.html
+    Verifica as credenciais enviadas e faz login.
+    Esse endpoint deve receber um application/json com os campos "username" e "password_hash"
+    Retorna um LoginResponse com o objeto UserResponse caso as credenciais baterem. Retorna 401 caso contrário.
     """
     if request.method == "POST":
-        username = (await request.form)["username"].strip()
-        password_hash = (await request.form)["password_hash"]
+        data = await request.json
+        if data is None:
+            return bad_request()
+
+        username = data.get("username", "").strip()
+        password_hash = data.get("password_hash", "")
+
+        if not username or not password_hash:
+            return bad_request()
+
         user = await User.find({"safe_username": username.lower()}).first_or_none()
         if user is not None:
             if user.password_hash == password_hash:
                 new_session = await Session.create_session(user)
-                response = await make_response(redirect(url_for("index")))
-                response.set_cookie("current_session", new_session.session_id)
-                response.set_cookie("index_message", "Logado com sucesso!")
-                return response
+                user = UserData(user.user_id, user.username, new_session.session_id)
+                response = UserResponse(True, "", user)
+                return asdict(response), 200
 
-        return await render_template("login.html", message="Credenciais incorretas.")
-    else:
-        session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
-        if session is not None:
-            if not (await session.is_expired()):
-                await session.renew()
-                response = await make_response(redirect(url_for("index")))
-                response.set_cookie("index_message", "Você já está logado!")
-                return response
-
-        return await render_template("login.html")
+        return asdict(UserResponse(False, "Credenciais incorretas.", None)), 401
 
 
 @app.route("/register", methods=["GET", "POST"])
