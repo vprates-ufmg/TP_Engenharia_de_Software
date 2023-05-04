@@ -1,8 +1,6 @@
 from dataclasses import asdict
-
-from quart import Quart, request, render_template, make_response, redirect, url_for, jsonify
+from quart import Quart, request, jsonify
 from beanie import init_beanie
-
 from api_responses import UserData, UserResponse, GenericResponse
 from db.Session import Session
 from db.User import User
@@ -11,7 +9,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import dotenv
 import os
 
-app = Quart("review_professores", template_folder="src/templates", static_folder="src/static")
+app = Quart("review_professores")
 
 
 @app.before_serving
@@ -123,16 +121,17 @@ async def register():
 async def logout():
     """
     Desconecta o usuário do sistema, deletando a sessão salva.
-    :return: redireciona para o index.html após desconexão
+    Esse endpoint sempre retorna 200.
     """
     session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
     if session is None:
-        return redirect(url_for("index"))
+        return asdict(GenericResponse(True, "Já desconectado.")), 200
     else:
         await session.delete_session()
-        response = await make_response(redirect(url_for("index")))
-        response.set_cookie("index_message", "Desconectado com sucesso.")
-        return redirect(url_for("login"))
+        response = GenericResponse(True, "Desconectado com sucesso.")
+        out = jsonify(asdict(response))
+        out.delete_cookie("current_session")
+        return out, 200
 
 
 if __name__ == "__main__":
