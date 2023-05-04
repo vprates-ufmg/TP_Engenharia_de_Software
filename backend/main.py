@@ -15,6 +15,7 @@ import os
 app = Quart("review_professores")
 rate_limiter = RateLimiter(app)
 
+
 @app.before_serving
 async def init_database():
     dotenv.load_dotenv()
@@ -115,7 +116,6 @@ async def register():
     out = jsonify(asdict(response))
     out.set_cookie("current_session", new_session.session_id)
     return out, 200
-
 
 
 @app.route("/logout", methods=["GET"])
