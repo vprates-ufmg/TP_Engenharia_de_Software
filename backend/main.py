@@ -40,15 +40,13 @@ async def login():
     Retorna 401 caso contrário.
     Retorna 409 caso o usuário já estiver logado.
     """
-    session_cookie = request.cookies.get("current_session")
-    if session_cookie is not None:
-        session = await Session.find({"session_id": session_cookie}).first_or_none()
-        if session is not None:
-            user = await User.find({"user_id": session.linked_user_id}).first_or_none()
-            if not (await session.is_expired()):
-                await session.renew()
-                user = UserData(user.user_id, user.username)
-                return asdict(UserResponse(False, "Você já está logado!", user)), 409
+    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    if session is not None:
+        user = await User.find({"user_id": session.linked_user_id}).first_or_none()
+        if not (await session.is_expired()):
+            await session.renew()
+            user = UserData(user.user_id, user.username)
+            return asdict(UserResponse(False, "Você já está logado!", user)), 409
 
     data = await request.json
     if data is None:
@@ -80,15 +78,13 @@ async def register():
     Caso já existir um usuário de mesmo nome, retorna 409.
     Caso os requisitos de senha e username não forem cumpridos, retorna 400.
     """
-    session_cookie = request.cookies.get("current_session")
-    if session_cookie is not None:
-        session = await Session.find({"session_id": session_cookie}).first_or_none()
-        if session is not None:
-            user = await User.find({"user_id": session.linked_user_id}).first_or_none()
-            if not (await session.is_expired()):
-                await session.renew()
-                user = UserData(user.user_id, user.username)
-                return asdict(UserResponse(False, "Você já está logado!", user)), 409
+    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    if session is not None:
+        user = await User.find({"user_id": session.linked_user_id}).first_or_none()
+        if not (await session.is_expired()):
+            await session.renew()
+            user = UserData(user.user_id, user.username)
+            return asdict(UserResponse(False, "Você já está logado!", user)), 409
 
     data = await request.json
     if data is None:
