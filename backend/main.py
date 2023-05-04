@@ -1,8 +1,8 @@
 from quart import Quart, request, render_template, make_response, redirect, url_for
 from beanie import init_beanie
-from src.db.Session import Session
-from src.db.User import User
-from src.db.parse_login import create_mongodb_uri
+from db.Session import Session
+from db.User import User
+from db.parse_login import create_mongodb_uri
 from motor.motor_asyncio import AsyncIOMotorClient
 import dotenv
 import os
@@ -23,21 +23,6 @@ async def init_database():
     uri = create_mongodb_uri(mongodb_server, mongodb_port, mongodb_username, mongodb_password, mongodb_auth_db)
     client = AsyncIOMotorClient(uri)
     await init_beanie(getattr(client, mongodb_database), document_models=[User, Session])
-
-
-@app.route("/")
-async def index():
-    """
-    Renderiza a página inicial do aplicativo. Possui suporte a leitura de mensagens salvas no cookie "index_message".
-    :return: renderiza o template do index.html
-    """
-    message = request.cookies.get("index_message")
-    if message is None:
-        return await render_template("index.html")
-    else:
-        response = await make_response(await render_template("index.html", message=message))
-        response.delete_cookie("index_message")
-        return response
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -119,4 +104,5 @@ async def logout():
         return redirect(url_for("login"))
 
 
-app.run()
+if __name__ == "__main__":
+    app.run()

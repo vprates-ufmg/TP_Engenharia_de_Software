@@ -26,15 +26,34 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
 ```bash
     git clone https://github.com/vprates-ufmg/TP_Engenharia_de_Software
     cd TP_Engenharia_de_Software
+
+    ## configure o backend
+    cd backend
     python3 -m pip install -r requirements.txt
     cp .env_example .env
+    ## instale o mongodb, configure e coloque as credenciais
     nano .env
-    python3 main.py
+    cd ..
+
+    ## configure o frontend
+    cd frontend
+    [...]
+    cd ..
+
+    ## abra os servidores
+    ./start.sh # localmente
+    ./start.sh --production #em produção
 ```
 
 # Formatação do código
 ```bash
+    ## backend
+    cd backend
     find . -name '*.py' -print0 | xargs -0 python3 -m black --line-length=120
+    cd ..
+
+    ## frontend
+    [...]
 ```
 
 ## Design do Front-End

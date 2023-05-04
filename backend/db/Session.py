@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from beanie import Document, Indexed
 from datetime import datetime, timedelta
-from src.db.User import User
+from db.User import User
 
 DAYS_TO_EXPIRE = 60
 
