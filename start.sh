@@ -12,6 +12,6 @@ else
   python3 main.py &
   cd ..
 
-  cd frontend || exit
+  cd frontend/review-profs || exit
   npm start
 fi
