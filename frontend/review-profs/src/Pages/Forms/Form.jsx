@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 
-import Hash from "../../Services/hash";
-import api from "../../Services/api";
-
-import LoginIcon from "../../Images/login-icon.png"
+import Hash from "../../Services/Hash";
+import Logout from "../../Services/Logout";
 
 import '../../Styles/Forms.css'
 
-const Login = props => {
+const Form = props => {
     const [user, setUser] = useState(null)
     const [password, setPassword] = useState(null)
     const [passwordShown, setPasswordShown] = useState(false);
@@ -16,30 +14,32 @@ const Login = props => {
         setPasswordShown(!passwordShown)
     }
 
-    const handleLogin = e => {
+    async function handleSubmit(e) {
         e.preventDefault()
-        const password_hash = Hash(password)
-        api.post('/login', {
-            username: user,
-            password_hash: password_hash
+        const password_hash = await Hash(password)
+        fetch(props.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: user, password_hash })
         })
-            .then(
-                response => {
-                    console.log(response)
-                }
-            )
+
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => alert(error));
     }
 
     return (
         <div className="wrapper">
             <div className="form-box">
                 <div className="header">
-                    <img src={LoginIcon} alt="Ícone de Login" />
-                    <p>Profs' Review - Login</p>
+                    <img src={props.image} alt={props.imageAlt} />
+                    <p>Profs' Review - {props.pageType}</p>
                 </div>
                 <div className="form-body">
 
-                    <form onSubmit={handleLogin}
+                    <form onSubmit={handleSubmit}
                         className='form'
                         id="form"
                         method="POST">
@@ -48,7 +48,7 @@ const Login = props => {
                             type="text"
                             name="username"
                             id="username"
-                            placeholder="Digite seu usuário"
+                            placeholder={props.userPlaceholder}
                             minLength={4}
                             required></input>
 
@@ -58,24 +58,21 @@ const Login = props => {
                                 type={passwordShown ? "text" : "password"}
                                 name="password"
                                 id="password"
-                                placeholder="Digite sua senha"
+                                placeholder={props.passwordPlaceholder}
                                 minLength={6} required></input>
                             <i onClick={togglePassword}
                                 className={passwordShown ? "far fa-eye-slash" : "far fa-eye"}
                                 id="toggle-password"></i>
                         </div>
-                        <input type="hidden"
-                            name="password_hash"
-                            id="password-hash"
-                        ></input>
-
-                        <button className='form-button' type="submit">Login</button>
-                        <p>Não possui conta? <a href="/register">Registre-se</a> agora</p>
+                        <button className='form-button' type="submit">{props.buttonText}</button>
+                        <p>{props.pText} <a href={props.refferLink}>{props.aText}</a> agora</p>
                     </form>
                 </div>
             </div>
+            <button onClick={Logout}>Logout</button>
+
         </div>
     )
 }
 
-export default Login
+export default Form
