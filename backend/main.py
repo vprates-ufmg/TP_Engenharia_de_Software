@@ -108,9 +108,6 @@ async def register():
     if not username or not password_hash:
         return bad_request()
 
-    if len(username) < 4:
-        return asdict(GenericResponse(False, "O nome de usuário deve conter no mínimo 4 caracteres.")), 400
-
     user = await User.find({"safe_username": username.lower()}).first_or_none()
     if user is not None:
         return asdict(UserResponse(False, "Já existe um usuário com esse nome.", None)), 409
