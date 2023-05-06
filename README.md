@@ -33,6 +33,7 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
     cp .env_example .env
     ## instale o mongodb, configure e coloque as credenciais
     nano .env
+    python3 db/load_classes_from_csv.py db/classes.csv
     cd ..
 
     ## configure o frontend
