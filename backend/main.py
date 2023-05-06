@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from quart import Quart, request, jsonify
 from beanie import init_beanie
+from quart_cors import cors, route_cors
 from quart_rate_limiter import RateLimiter, rate_limit, rate_exempt
 from api_responses import UserData, UserResponse, GenericResponse
 from db.Session import Session
@@ -13,6 +14,7 @@ import dotenv
 import os
 
 app = Quart("review_professores")
+app = cors(app, allow_origin="*")
 rate_limiter = RateLimiter(app)
 
 
@@ -36,7 +38,9 @@ def bad_request():
 
 
 @app.route("/login", methods=["POST"])
-@rate_limit(5, timedelta(minutes=1))
+#@rate_limit(5, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
+@rate_exempt
+@route_cors(allow_origin="*")
 async def login():
     """
     Verifica as credenciais enviadas e faz login.
@@ -77,7 +81,9 @@ async def login():
 
 
 @app.route("/register", methods=["POST"])
-@rate_limit(3, timedelta(minutes=1))
+#@rate_limit(3, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
+@rate_exempt
+@route_cors(allow_origin="*")
 async def register():
     """
     Registra o usuário no sistema.
@@ -120,6 +126,7 @@ async def register():
 
 @app.route("/logout", methods=["GET"])
 @rate_exempt
+@route_cors(allow_origin="*")
 async def logout():
     """
     Desconecta o usuário do sistema, deletando a sessão salva.
