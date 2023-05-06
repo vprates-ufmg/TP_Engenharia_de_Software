@@ -51,6 +51,9 @@ span.error {
     border-radius: 20%;
 }
 
+p:first-of-type {
+    margin-block-end: 2em;
+}
 
 .form-box .header>p {
     color: white;
