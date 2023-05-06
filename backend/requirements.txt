@@ -1,0 +1,5 @@
+beanie==1.16.8
+quart==0.18.4
+python-dotenv==0.20.0
+uvicorn==0.17.6
+quart-rate-limiter==0.8.0

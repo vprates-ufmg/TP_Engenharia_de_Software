@@ -18,9 +18,48 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
 - Victor Prates Figueiredo
 
 ## Tecnologias
-- Flask
+- Quart
 - React
 - MongoDB
+
+# Instalação
+```bash
+    git clone https://github.com/vprates-ufmg/TP_Engenharia_de_Software
+    cd TP_Engenharia_de_Software
+
+    ## configure o backend
+    cd backend
+    python3 -m pip install -r requirements.txt
+    cp .env_example .env
+    ## instale o mongodb, configure e coloque as credenciais
+    nano .env
+    cd ..
+
+    ## configure o frontend
+    cd frontend
+    [...]
+    cd ..
+
+    ## abra os servidores
+    ./start.sh # localmente
+    ./start.sh --production #em produção
+```
+
+# Formatação do código
+```bash
+    ## backend
+    cd backend
+    find . -name '*.py' -print0 | xargs -0 python3 -m black --line-length=120
+    cd ..
+
+    ## frontend
+    [...]
+```
+
+## Design do Front-End
+Link do Figma com o desing das páginas
+<br>
+<a href="https://www.figma.com/file/6ZZET6D42xeVovtNnFhwm3/TP1_Eng_Soft?type=design&node-id=0%3A1&t=GMHt6m7Ct4FRkFFp-1">Figma Review De Profs</a>
 
 # Histórias da sprint  
 
