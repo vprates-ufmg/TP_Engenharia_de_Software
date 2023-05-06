@@ -1,0 +1,11 @@
+<html lang="pt-br">
+<head>
+    <title>Professores</title>
+</head>
+<body>
+    <h1> Conhece algum desses professores: </h1>
+    {% for nome, id in zip(profs, ids) %}
+    <a href="{{ url_for(f'/prof/{id}') }}"> {{nome}} </p>
+    {% endfor %}
+</body>
+</html>
