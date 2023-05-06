@@ -9,7 +9,7 @@ if [ "$1" == "--production" ]; then
   npm start
 else
   cd backend || exit
-  python main.py &
+  python3 main.py &
   cd ..
 
   cd frontend/review-profs || exit
