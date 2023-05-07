@@ -1,11 +1,14 @@
 from datetime import datetime
 from uuid import uuid4
-
 from beanie import Document, Indexed
 from enum import IntEnum
 
 
 class SortingMethod(IntEnum):
+    """
+    Enum que representa o método de ordenação de uma Review.
+    """
+
     NEWEST_FIRST = 0
     OLDEST_FIRST = 1
     MOST_UPVOTED = 2
@@ -13,6 +16,10 @@ class SortingMethod(IntEnum):
 
 
 class Review(Document):
+    """
+    A publicação com a opinião do usuário a ser mostrada no site.
+    """
+
     id_review: Indexed(str, unique=True)
     author: str
     author_id: str

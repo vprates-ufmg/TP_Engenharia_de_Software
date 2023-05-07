@@ -1,3 +1,6 @@
+"""
+Esse arquivo inclui várias respostas de API codificadas em dataclasses.
+"""
 from dataclasses import dataclass
 from typing import Union, List
 

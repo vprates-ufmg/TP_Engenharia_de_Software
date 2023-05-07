@@ -1,10 +1,13 @@
 from typing import List
 from uuid import uuid4
-
 from beanie import Document, Indexed
 
 
 class User(Document):
+    """
+    Representa um usuário da plataforma do site.
+    """
+
     user_id: Indexed(str, unique=True)
     username: str
     safe_username: str

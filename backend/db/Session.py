@@ -1,6 +1,5 @@
 from typing import Union
 from uuid import uuid4
-
 from beanie import Document, Indexed
 from datetime import datetime, timedelta
 from db.User import User
@@ -9,6 +8,11 @@ DAYS_TO_EXPIRE = 60
 
 
 class Session(Document):
+    """
+    Representa uma sessão de login. O id da sessão deve ser passado
+    como cookie para o navegador sempre que aplicável.
+    """
+
     session_id: Indexed(str, unique=True)
     expire_date: str
     linked_user_id: str

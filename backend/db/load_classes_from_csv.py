@@ -1,3 +1,9 @@
+"""
+Arquivo responsável por ler do arquivo .csv providenciado,
+os dados dos professores, matérias e semestres em que as matérias
+foram ofertadas.
+Deve ser um .csv com as colunas ["sem", "cod", "mat", "prof"].
+"""
 import asyncio
 import os
 from uuid import uuid4

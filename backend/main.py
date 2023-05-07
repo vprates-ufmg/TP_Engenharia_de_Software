@@ -1,5 +1,4 @@
 from dataclasses import asdict
-
 from beanie.odm.operators.find.comparison import In
 from quart import Quart, request, jsonify
 from beanie import init_beanie
@@ -30,6 +29,9 @@ app = cors(app, allow_origin="*")
 
 @app.before_serving
 async def init_database():
+    """
+    Inicializa o banco de dados antes de começar a receber requisições.
+    """
     dotenv.load_dotenv()
     mongodb_server = os.getenv("MONGODB_SERVER")
     mongodb_port = os.getenv("MONGODB_PORT")
