@@ -60,6 +60,7 @@ async def login():
     Retorna um LoginResponse com o objeto UserResponse caso as credenciais baterem.
     Retorna 401 caso contrário.
     Retorna 409 caso o usuário já estiver logado.
+    Esse endpoint retorna um cookie. Deve ser setado corretamente no navegador.
     """
     session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
     if session is not None:
@@ -99,6 +100,7 @@ async def register():
     Registra o usuário no sistema.
     Caso já existir um usuário de mesmo nome, retorna 409.
     Caso os requisitos de senha e username não forem cumpridos, retorna 400.
+    Esse endpoint retorna um cookie. Deve ser setado corretamente no navegador.
     """
     session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
     if session is not None:
@@ -137,6 +139,7 @@ async def logout():
     """
     Desconecta o usuário do sistema, deletando a sessão salva.
     Esse endpoint sempre retorna 200.
+    Esse endpoint retorna um cookie. Deve ser setado corretamente no navegador.
     """
     session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
     if session is None:
@@ -205,7 +208,7 @@ async def fetch_semestres():
 @route_cors(allow_origin="*")
 async def create_review():
     """
-    Cria uma review no site. O cookie "session_id" deve estar setado, indicando que o usuário está logado.
+    Cria uma review no site. O cookie "current_session" deve estar setado, indicando que o usuário está logado.
     O json de requisição deve ser algo do tipo:
     {
         "semester": "2021/2",
@@ -375,7 +378,7 @@ async def fetch_review():
 @route_cors(allow_origin="*")
 async def upvote_review():
     """
-    Dá upvote em um review. O cookie "session_id" deve estar setado, indicando que o usuário está logado.
+    Dá upvote em um review. O cookie "current_session" deve estar setado, indicando que o usuário está logado.
     O json de requisição deve ter o campo "review_id" indicando o id do review a ser upvotado.
     Retorna 403 caso o usuário não estiver logado.
     Retorna 404 caso o review não existir.
@@ -428,7 +431,7 @@ async def upvote_review():
 @route_cors(allow_origin="*")
 async def downvote_review():
     """
-    Dá downvote em um review. O cookie "session_id" deve estar setado, indicando que o usuário está logado.
+    Dá downvote em um review. O cookie "current_session" deve estar setado, indicando que o usuário está logado.
     O json de requisição deve ter o campo "review_id" indicando o id do review a ser downvotado.
     Retorna 403 caso o usuário não estiver logado.
     Retorna 404 caso o review não existir.
