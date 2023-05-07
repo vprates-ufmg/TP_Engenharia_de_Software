@@ -10,6 +10,8 @@ class User(Document):
     safe_username: str
     password_hash: str
     sessions: List[str]
+    upvoted_reviews: list = []
+    downvoted_reviews: list = []
 
     @classmethod
     async def create_user(cls, username: str, password_hash: str):

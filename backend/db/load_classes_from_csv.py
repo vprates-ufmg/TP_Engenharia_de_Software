@@ -19,6 +19,7 @@ except IndexError:
 
 df = pd.read_csv(file_path, sep="$")
 
+
 async def init_database():
     dotenv.load_dotenv()
     mongodb_server = os.getenv("MONGODB_SERVER")
@@ -31,6 +32,7 @@ async def init_database():
     uri = create_mongodb_uri(mongodb_server, mongodb_port, mongodb_username, mongodb_password, mongodb_auth_db)
     client = AsyncIOMotorClient(uri)
     await init_beanie(getattr(client, mongodb_database), document_models=[Professor, Turma, Disciplina])
+
 
 async def main():
     await init_database()
@@ -50,7 +52,13 @@ async def main():
     for sem, mat, prof in zip(df["sem"], df["mat"], df["prof"]):
         prof = await Professor.find({"nome": prof}).first_or_none()
         mat = await Disciplina.find({"nome": mat.strip()}).first_or_none()
-        new = Turma(cod_disciplina=mat.cod_disciplina, semestre=sem.strip(), id_disciplina=mat.id_disciplina, uid_professor_ministrante=prof.uid_professor)
+        new = Turma(
+            cod_disciplina=mat.cod_disciplina,
+            semestre=sem.strip(),
+            id_disciplina=mat.id_disciplina,
+            uid_professor_ministrante=prof.uid_professor,
+        )
         await new.save()
+
 
 asyncio.run(main())

@@ -40,8 +40,9 @@ class Session(Document):
         """
         await self.delete()
         linked_user = await User.find({"user_id": self.linked_user_id}).first_or_none()
-        linked_user.sessions.remove(self.session_id)
-        await linked_user.save()
+        if linked_user is not None:
+            linked_user.sessions.remove(self.session_id)
+            await linked_user.save()
 
     @classmethod
     async def create_session(cls, user: User):
