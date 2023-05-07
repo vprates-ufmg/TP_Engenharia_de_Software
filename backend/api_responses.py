@@ -9,6 +9,12 @@ class GenericResponse:
 
 
 @dataclass
+class SimpleData:
+    id: Union[str, None]
+    nome: str
+
+
+@dataclass
 class UserData:
     id: str
     username: str
@@ -40,3 +46,10 @@ class ReviewResponse:
     success: bool
     message: str
     data: List[ReviewData]
+
+
+@dataclass
+class SimpleResponse:
+    success: bool
+    message: str
+    data: List[SimpleData]

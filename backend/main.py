@@ -1,9 +1,18 @@
 from dataclasses import asdict
+
+from beanie.odm.operators.find.comparison import In
 from quart import Quart, request, jsonify
 from beanie import init_beanie
 from quart_cors import cors, route_cors
-from quart_rate_limiter import RateLimiter, rate_exempt
-from api_responses import UserData, UserResponse, GenericResponse, ReviewData, ReviewResponse
+from api_responses import (
+    UserData,
+    UserResponse,
+    GenericResponse,
+    ReviewData,
+    ReviewResponse,
+    SimpleData,
+    SimpleResponse,
+)
 from db.Review import SortingMethod, Review
 from db.Session import Session
 from db.User import User
@@ -17,7 +26,6 @@ import os
 
 app = Quart("review_professores")
 app = cors(app, allow_origin="*")
-rate_limiter = RateLimiter(app)
 
 
 @app.before_serving
@@ -42,8 +50,6 @@ def bad_request():
 
 
 @app.route("/login", methods=["POST"])
-# @rate_limit(5, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
-@rate_exempt
 @route_cors(allow_origin="*")
 async def login():
     """
@@ -85,8 +91,6 @@ async def login():
 
 
 @app.route("/register", methods=["POST"])
-# @rate_limit(3, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
-@rate_exempt
 @route_cors(allow_origin="*")
 async def register():
     """
@@ -126,7 +130,6 @@ async def register():
 
 
 @app.route("/logout", methods=["GET"])
-@rate_exempt
 @route_cors(allow_origin="*")
 async def logout():
     """
@@ -144,9 +147,59 @@ async def logout():
         return out, 200
 
 
+@app.route("/fetch_disciplinas", methods=["GET"])
+@route_cors(allow_origin="*")
+async def fetch_disciplinas():
+    """Retorna as disciplinas disponíveis no banco de dados"""
+    disciplinas = await Disciplina.find({}).to_list()
+    d = [SimpleData(d.id_disciplina, d.nome) for d in disciplinas]
+    return asdict(SimpleResponse(True, "Disciplinas obtidas com sucesso.", d)), 200
+
+
+@app.route("/fetch_professores", methods=["GET"])
+@route_cors(allow_origin="*")
+async def fetch_professores():
+    """Retorna os professores que deram a disciplina "disciplina_id" do banco de dados."""
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    disciplina_id = data.get("disciplina_id", "")
+    if not disciplina_id:
+        return bad_request()
+
+    turmas_da_disciplina = await Turma.find(Turma.id_disciplina == disciplina_id).to_list()
+    professores_ids = [t.uid_professor_ministrante for t in turmas_da_disciplina]
+
+    professores = await Professor.find(In(Professor.uid_professor, professores_ids)).to_list()
+    p = [SimpleData(p.uid_professor, p.nome) for p in professores]
+
+    return asdict(SimpleResponse(True, "Professores obtidos com sucesso.", p)), 200
+
+
+@app.route("/fetch_semestres", methods=["GET"])
+@route_cors(allow_origin="*")
+async def fetch_semestres():
+    """Retorna os semestres que o professor "professor_id" deu a disciplina "disciplina_id" do banco de dados."""
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    disciplina_id = data.get("disciplina_id", "")
+    professor_id = data.get("professor_id", "")
+    if not disciplina_id or not professor_id:
+        return bad_request()
+
+    turmas_da_disciplina = await Turma.find(
+        Turma.id_disciplina == disciplina_id, Turma.uid_professor_ministrante == professor_id
+    ).to_list()
+    semestres = [t.semestre for t in turmas_da_disciplina]
+    r = [SimpleData(None, s) for s in semestres]
+
+    return asdict(SimpleResponse(True, "Semestres obtidos com sucesso.", r)), 200
+
+
 @app.route("/create_review", methods=["POST"])
-# @rate_limit(10, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
-@rate_exempt
 @route_cors(allow_origin="*")
 async def create_review():
     """
@@ -229,8 +282,6 @@ async def create_review():
 
 
 @app.route("/fetch_review", methods=["GET"])
-# @rate_limit(10, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
-@rate_exempt
 @route_cors(allow_origin="*")
 async def fetch_review():
     """
@@ -319,8 +370,6 @@ async def fetch_review():
 
 
 @app.route("/upvote_review", methods=["POST"])
-# @rate_limit(10, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
-@rate_exempt
 @route_cors(allow_origin="*")
 async def upvote_review():
     """
@@ -374,8 +423,6 @@ async def upvote_review():
 
 
 @app.route("/downvote_review", methods=["POST"])
-# @rate_limit(10, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
-@rate_exempt
 @route_cors(allow_origin="*")
 async def downvote_review():
     """
