@@ -32,10 +32,9 @@ async def init_database():
     mongodb_port = os.getenv("MONGODB_PORT")
     mongodb_username = os.getenv("MONGODB_USERNAME")
     mongodb_password = os.getenv("MONGODB_PASSWORD")
-    mongodb_auth_db = os.getenv("MONGODB_AUTH_DB")
     mongodb_database = os.getenv("MONGODB_DATABASE")
 
-    uri = create_mongodb_uri(mongodb_server, mongodb_port, mongodb_username, mongodb_password, mongodb_auth_db)
+    uri = create_mongodb_uri(mongodb_server, mongodb_port, mongodb_username, mongodb_password)
     client = AsyncIOMotorClient(uri)
     await init_beanie(getattr(client, mongodb_database), document_models=[Professor, Turma, Disciplina])
 

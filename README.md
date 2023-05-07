@@ -38,7 +38,7 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
 
     ## configure o frontend
     cd frontend
-    [...]
+    npm i
     cd ..
 
     ## abra os servidores
