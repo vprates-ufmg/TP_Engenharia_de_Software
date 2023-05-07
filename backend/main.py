@@ -216,6 +216,7 @@ async def create_review():
     await user.save()
 
     review = ReviewData(
+        review_id=review_obj.id_review,
         autor="Anônimo" if review_obj.is_anonymous else review_obj.author,
         content=review_obj.content,
         time=review_obj.time,
@@ -303,6 +304,7 @@ async def fetch_review():
 
         response_data.append(
             ReviewData(
+                review_id=result.id_review,
                 autor="Anônimo" if result.is_anonymous else result.author,
                 content=result.content,
                 time=result.time,

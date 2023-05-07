@@ -16,6 +16,7 @@ class UserData:
 
 @dataclass
 class ReviewData:
+    review_id: str
     autor: str
     content: str
     time: str
