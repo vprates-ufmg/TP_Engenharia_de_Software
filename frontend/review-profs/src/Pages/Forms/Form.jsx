@@ -17,21 +17,25 @@ const Form = props => {
 
     
     async function handleSubmit(e) {
+        var session = Cookies.get("session")
+        if (session === undefined){
+          session = "";
+        }
+
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        headers.append('Cookie', 'current_session=current_session');
         e.preventDefault()
         const password_hash = await Hash(password)
         const response = await fetch(props.url, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify({ username: user, password_hash })
+            body: JSON.stringify({ session: session, username: user, password_hash })
         })
 
         const data = await response.json()
 
         if (data.success) {
-            Cookies.set("current_session", data.data.id);
+            Cookies.set("session", data.session);
         }
         alert(data.message)
     }
