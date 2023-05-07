@@ -31,7 +31,7 @@ Visamos criar um site que torna possível os alunos avaliarem os professores.
     cd backend
     python3 -m pip install -r requirements.txt
     cp .env_example .env
-    ## instale o mongodb, configure e coloque as credenciais
+    ## deixe sem credenciais se hostear o mongodb localmente. coloque credenciais se for uma instancia do mongodb atlas
     nano .env
     python3 db/load_classes_from_csv.py db/classes.csv
     cd ..
