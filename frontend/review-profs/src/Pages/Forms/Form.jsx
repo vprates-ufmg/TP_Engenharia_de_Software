@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 
 import Hash from "../../Services/Hash";
-import Logout from "../../Services/Logout";
+import Logout from "../../Components/Logout";
 
 import '../../Styles/Forms.css'
 
@@ -75,7 +75,7 @@ const Form = props => {
                     </form>
                 </div>
             </div>
-            <button onClick={Logout}>Logout</button>
+            <Logout />
 
         </div>
     )
