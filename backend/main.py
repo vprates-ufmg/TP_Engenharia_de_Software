@@ -58,7 +58,7 @@ async def login():
         user = await User.find({"user_id": session.linked_user_id}).first_or_none()
         if not (await session.is_expired()):
             await session.renew()
-            user = UserData(user.user_id, user.username)
+            user = UserData(user.user_id, user.username, user.upvoted_reviews, user.downvoted_reviews)
             return asdict(UserResponse(False, "Você já está logado!", user)), 409
 
     data = await request.json
@@ -75,7 +75,7 @@ async def login():
     if user is not None:
         if user.password_hash == password_hash:
             new_session = await Session.create_session(user)
-            user = UserData(user.user_id, user.username)
+            user = UserData(user.user_id, user.username, user.upvoted_reviews, user.downvoted_reviews)
             response = UserResponse(True, "Logado com sucesso.", user)
             out = jsonify(asdict(response))
             out.set_cookie("current_session", new_session.session_id)
@@ -99,7 +99,7 @@ async def register():
         user = await User.find({"user_id": session.linked_user_id}).first_or_none()
         if not (await session.is_expired()):
             await session.renew()
-            user = UserData(user.user_id, user.username)
+            user = UserData(user.user_id, user.username, user.upvoted_reviews, user.downvoted_reviews)
             return asdict(UserResponse(False, "Você já está logado!", user)), 409
 
     data = await request.json
@@ -118,7 +118,7 @@ async def register():
 
     user_db = await User.create_user(username, password_hash)
     new_session = await Session.create_session(user_db)
-    user = UserData(user_db.user_id, user_db.username)
+    user = UserData(user_db.user_id, user_db.username, user_db.upvoted_reviews, user_db.downvoted_reviews)
     response = UserResponse(True, "Conta registrada com sucesso.", user)
     out = jsonify(asdict(response))
     out.set_cookie("current_session", new_session.session_id)
@@ -316,6 +316,116 @@ async def fetch_review():
         )
 
     return asdict(ReviewResponse(True, "Dados obtidos com sucesso!", response_data)), 200
+
+
+@app.route("/upvote_review", methods=["POST"])
+# @rate_limit(10, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
+@rate_exempt
+@route_cors(allow_origin="*")
+async def upvote_review():
+    """
+    Dá upvote em um review. O cookie "session_id" deve estar setado, indicando que o usuário está logado.
+    O json de requisição deve ter o campo "review_id" indicando o id do review a ser upvotado.
+    Retorna 403 caso o usuário não estiver logado.
+    Retorna 404 caso o review não existir.
+    Retorna 409 se o review já tiver sido upvotado pelo usuário.
+    """
+    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    if session is None:
+        return asdict(GenericResponse(False, "Você não está logado!")), 403
+    else:
+        if await session.is_expired():
+            return asdict(GenericResponse(False, "Por favor, faça login novamente.")), 403
+
+    user = await User.find(User.user_id == session.linked_user_id).first_or_none()
+    if user is None:
+        await session.delete_session()
+        out = jsonify(asdict(GenericResponse(False, "Conta inexistente.")))
+        out.delete_cookie("current_session")
+        return out, 403
+
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    review_id = data.get("review_id", "")
+    if not review_id:
+        return bad_request()
+
+    review = await Review.find(Review.id_review == review_id).first_or_none()
+    if review is None:
+        return asdict(GenericResponse(False, "Review não encontrada.")), 404
+
+    if review.id_review in user.upvoted_reviews:
+        return asdict(GenericResponse(False, "Você já deu upvote neste review.")), 409
+    elif review.id_review in user.downvoted_reviews:
+        user.downvoted_reviews.remove(review.id_review)
+        user.upvoted_reviews.append(review.id_review)
+        review.n_votes += 2
+        await user.save()
+        await review.save()
+    else:
+        user.upvoted_reviews.append(review.id_review)
+        review.n_votes += 1
+        await user.save()
+        await review.save()
+
+    return asdict(GenericResponse(True, "Upvote computado com sucesso."))
+
+
+@app.route("/downvote_review", methods=["POST"])
+# @rate_limit(10, timedelta(minutes=1)) # descomentar e comentar o abaixo antes do merge
+@rate_exempt
+@route_cors(allow_origin="*")
+async def downvote_review():
+    """
+    Dá downvote em um review. O cookie "session_id" deve estar setado, indicando que o usuário está logado.
+    O json de requisição deve ter o campo "review_id" indicando o id do review a ser downvotado.
+    Retorna 403 caso o usuário não estiver logado.
+    Retorna 404 caso o review não existir.
+    Retorna 409 se o review já tiver sido downvotado pelo usuário.
+    """
+    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    if session is None:
+        return asdict(GenericResponse(False, "Você não está logado!")), 403
+    else:
+        if await session.is_expired():
+            return asdict(GenericResponse(False, "Por favor, faça login novamente.")), 403
+
+    user = await User.find(User.user_id == session.linked_user_id).first_or_none()
+    if user is None:
+        await session.delete_session()
+        out = jsonify(asdict(GenericResponse(False, "Conta inexistente.")))
+        out.delete_cookie("current_session")
+        return out, 403
+
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    review_id = data.get("review_id", "")
+    if not review_id:
+        return bad_request()
+
+    review = await Review.find(Review.id_review == review_id).first_or_none()
+    if review is None:
+        return asdict(GenericResponse(False, "Review não encontrada.")), 404
+
+    if review.id_review in user.downvoted_reviews:
+        return asdict(GenericResponse(False, "Você já deu downvote neste review.")), 409
+    elif review.id_review in user.upvoted_reviews:
+        user.upvoted_reviews.remove(review.id_review)
+        user.downvoted_reviews.append(review.id_review)
+        review.n_votes -= 2
+        await user.save()
+        await review.save()
+    else:
+        user.upvoted_reviews.append(review.id_review)
+        review.n_votes -= 1
+        await user.save()
+        await review.save()
+
+    return asdict(GenericResponse(True, "Downvote computado com sucesso."))
 
 
 if __name__ == "__main__":

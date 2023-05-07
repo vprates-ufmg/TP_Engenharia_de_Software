@@ -12,6 +12,8 @@ class GenericResponse:
 class UserData:
     id: str
     username: str
+    upvoted_reviews: List[str]
+    downvoted_reviews: List[str]
 
 
 @dataclass
