@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 import Hash from "../../Services/Hash";
 import Logout from "../../Services/Logout";
@@ -14,20 +15,25 @@ const Form = props => {
         setPasswordShown(!passwordShown)
     }
 
+    
     async function handleSubmit(e) {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Cookie', 'current_session=current_session');
         e.preventDefault()
         const password_hash = await Hash(password)
-        fetch(props.url, {
+        const response = await fetch(props.url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify({ username: user, password_hash })
         })
 
-        .then(response => response.json())
-        .then(data => alert(data.message))
-        .catch(error => alert(error));
+        const data = await response.json()
+
+        if (data.success) {
+            Cookies.set("current_session", data.data.id);
+        }
+        alert(data.message)
     }
 
     return (
