@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from beanie.odm.operators.find.comparison import In
-from quart import Quart, request, jsonify
+from quart import Quart, request
 from beanie import init_beanie
 from quart_cors import cors, route_cors
 from api_responses import (
@@ -60,19 +60,20 @@ async def login():
     Retorna um LoginResponse com o objeto UserResponse caso as credenciais baterem.
     Retorna 401 caso contrário.
     Retorna 409 caso o usuário já estiver logado.
-    Esse endpoint retorna um cookie. Deve ser setado corretamente no navegador.
+    Esse endpoint retorna o campo "session". Deve ser salvo como um cookie para requests futuros.
     """
-    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
     if session is not None:
         user = await User.find({"user_id": session.linked_user_id}).first_or_none()
         if not (await session.is_expired()):
             await session.renew()
             user = UserData(user.user_id, user.username, user.upvoted_reviews, user.downvoted_reviews)
-            return asdict(UserResponse(False, "Você já está logado!", user)), 409
-
-    data = await request.json
-    if data is None:
-        return bad_request()
+            return asdict(UserResponse(False, "Você já está logado!", user, session.session_id)), 409
 
     username = data.get("username", "").strip()
     password_hash = data.get("password_hash", "")
@@ -85,12 +86,10 @@ async def login():
         if user.password_hash == password_hash:
             new_session = await Session.create_session(user)
             user = UserData(user.user_id, user.username, user.upvoted_reviews, user.downvoted_reviews)
-            response = UserResponse(True, "Logado com sucesso.", user)
-            out = jsonify(asdict(response))
-            out.set_cookie("current_session", new_session.session_id)
-            return out, 200
+            response = UserResponse(True, "Logado com sucesso.", user, new_session.session_id)
+            return asdict(response), 200
 
-    return asdict(UserResponse(False, "Credenciais incorretas.", None)), 401
+    return asdict(UserResponse(False, "Credenciais incorretas.", None, "")), 401
 
 
 @app.route("/register", methods=["POST"])
@@ -100,19 +99,20 @@ async def register():
     Registra o usuário no sistema.
     Caso já existir um usuário de mesmo nome, retorna 409.
     Caso os requisitos de senha e username não forem cumpridos, retorna 400.
-    Esse endpoint retorna um cookie. Deve ser setado corretamente no navegador.
+    Esse endpoint retorna o campo "session". Deve ser salvo como um cookie para requests futuros.
     """
-    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
     if session is not None:
         user = await User.find({"user_id": session.linked_user_id}).first_or_none()
         if not (await session.is_expired()):
             await session.renew()
             user = UserData(user.user_id, user.username, user.upvoted_reviews, user.downvoted_reviews)
-            return asdict(UserResponse(False, "Você já está logado!", user)), 409
-
-    data = await request.json
-    if data is None:
-        return bad_request()
+            return asdict(UserResponse(False, "Você já está logado!", user, session.session_id)), 409
 
     username = data.get("username", "").strip()
     password_hash = data.get("password_hash", "")
@@ -122,15 +122,13 @@ async def register():
 
     user = await User.find({"safe_username": username.lower()}).first_or_none()
     if user is not None:
-        return asdict(UserResponse(False, "Já existe um usuário com esse nome.", None)), 409
+        return asdict(UserResponse(False, "Já existe um usuário com esse nome.", None, "")), 409
 
     user_db = await User.create_user(username, password_hash)
     new_session = await Session.create_session(user_db)
     user = UserData(user_db.user_id, user_db.username, user_db.upvoted_reviews, user_db.downvoted_reviews)
-    response = UserResponse(True, "Conta registrada com sucesso.", user)
-    out = jsonify(asdict(response))
-    out.set_cookie("current_session", new_session.session_id)
-    return out, 200
+    response = UserResponse(True, "Conta registrada com sucesso.", user, new_session.session_id)
+    return asdict(response), 200
 
 
 @app.route("/logout", methods=["GET"])
@@ -138,18 +136,20 @@ async def register():
 async def logout():
     """
     Desconecta o usuário do sistema, deletando a sessão salva.
-    Esse endpoint sempre retorna 200.
-    Esse endpoint retorna um cookie. Deve ser setado corretamente no navegador.
+    Esse endpoint sempre retorna 200 dado que você passe um json com o parâmetro "session".
+    Esse endpoint retorna o campo "session". Deve ser salvo como um cookie para requests futuros.
     """
-    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
     if session is None:
         return asdict(GenericResponse(True, "Já desconectado.")), 200
     else:
         await session.delete_session()
-        response = GenericResponse(True, "Desconectado com sucesso.")
-        out = jsonify(asdict(response))
-        out.delete_cookie("current_session")
-        return out, 200
+        return asdict(GenericResponse(True, "Desconectado com sucesso.")), 200
 
 
 @app.route("/fetch_disciplinas", methods=["GET"])
@@ -208,20 +208,26 @@ async def fetch_semestres():
 @route_cors(allow_origin="*")
 async def create_review():
     """
-    Cria uma review no site. O cookie "current_session" deve estar setado, indicando que o usuário está logado.
+    Cria uma review no site.
     O json de requisição deve ser algo do tipo:
     {
         "semester": "2021/2",
         "teacher_id": "120526b0-9a0a-498c-acae-8d25a98d03e1",
         "disciplina_id": "f0fc331b-1bb7-4978-91c6-ffff45141658",
         "is_anonymous": false,
-        "content": "muito bom o professor, mas no maximo 500 caracteres"
+        "content": "muito bom o professor, mas no maximo 500 caracteres",
+        "session": "valor_aqui"
     }
     Retorna 403 se não estiver logado.
     Retorna 404 se a disciplina ou o professor não forem encontrados.
     Retorna 413 se a mensagem for grande demais.
     """
-    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
     if session is None:
         return asdict(GenericResponse(False, "Você não está logado!")), 403
     else:
@@ -231,13 +237,7 @@ async def create_review():
     user = await User.find(User.user_id == session.linked_user_id).first_or_none()
     if user is None:
         await session.delete_session()
-        out = jsonify(asdict(GenericResponse(False, "Conta inexistente.")))
-        out.delete_cookie("current_session")
-        return out, 403
-
-    data = await request.json
-    if data is None:
-        return bad_request()
+        return asdict(GenericResponse(False, "Conta inexistente.")), 403
 
     semester = data.get("semester", "")
     teacher = data.get("teacher_id", "")
@@ -378,13 +378,19 @@ async def fetch_review():
 @route_cors(allow_origin="*")
 async def upvote_review():
     """
-    Dá upvote em um review. O cookie "current_session" deve estar setado, indicando que o usuário está logado.
+    Dá upvote em um review.
     O json de requisição deve ter o campo "review_id" indicando o id do review a ser upvotado.
+    O json de requisição deve ter o campo "session" indicando o token de sessão.
     Retorna 403 caso o usuário não estiver logado.
     Retorna 404 caso o review não existir.
     Retorna 409 se o review já tiver sido upvotado pelo usuário.
     """
-    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
     if session is None:
         return asdict(GenericResponse(False, "Você não está logado!")), 403
     else:
@@ -394,13 +400,7 @@ async def upvote_review():
     user = await User.find(User.user_id == session.linked_user_id).first_or_none()
     if user is None:
         await session.delete_session()
-        out = jsonify(asdict(GenericResponse(False, "Conta inexistente.")))
-        out.delete_cookie("current_session")
-        return out, 403
-
-    data = await request.json
-    if data is None:
-        return bad_request()
+        return asdict(GenericResponse(False, "Conta inexistente.")), 403
 
     review_id = data.get("review_id", "")
     if not review_id:
@@ -431,13 +431,19 @@ async def upvote_review():
 @route_cors(allow_origin="*")
 async def downvote_review():
     """
-    Dá downvote em um review. O cookie "current_session" deve estar setado, indicando que o usuário está logado.
+    Dá downvote em um review.
     O json de requisição deve ter o campo "review_id" indicando o id do review a ser downvotado.
+    O json de requisição deve ter o campo "session" indicando o token de sessão.
     Retorna 403 caso o usuário não estiver logado.
     Retorna 404 caso o review não existir.
     Retorna 409 se o review já tiver sido downvotado pelo usuário.
     """
-    session = await Session.find({"session_id": request.cookies.get("current_session")}).first_or_none()
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
     if session is None:
         return asdict(GenericResponse(False, "Você não está logado!")), 403
     else:
@@ -447,13 +453,7 @@ async def downvote_review():
     user = await User.find(User.user_id == session.linked_user_id).first_or_none()
     if user is None:
         await session.delete_session()
-        out = jsonify(asdict(GenericResponse(False, "Conta inexistente.")))
-        out.delete_cookie("current_session")
-        return out, 403
-
-    data = await request.json
-    if data is None:
-        return bad_request()
+        return asdict(GenericResponse(False, "Conta inexistente.")), 403
 
     review_id = data.get("review_id", "")
     if not review_id:

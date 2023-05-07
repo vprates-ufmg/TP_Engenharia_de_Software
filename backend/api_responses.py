@@ -9,6 +9,7 @@ from typing import Union, List
 class GenericResponse:
     success: bool
     message: str
+    session: Union[str, None] = None
 
 
 @dataclass
@@ -42,6 +43,7 @@ class UserResponse:
     success: bool
     message: str
     data: Union[UserData, None]
+    session: str
 
 
 @dataclass
