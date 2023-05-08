@@ -1,23 +1,36 @@
-async function fetchSemestres(id_disciplina = "", id_professor = "") {
-  const headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  const response = await fetch("http://127.0.0.1:5000/fetch_semestres", {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify({
-      disciplina_id: id_disciplina,
-      professor_id: id_professor,
-    }),
-  });
+import React, { useState, useEffect } from "react";
 
-  const data = await response.json();
-  const items = data.data;
+import "../Styles/Select.css"
 
-  return (
-    <select defaultValue="Selecione um Semestre">
-      {items.map((item) => (
-        <option value={item.nome}>{item.nome}</option>
-      ))}
-    </select>
-  );
-}
+const CaixaSemestres = _ => {
+  const [semestres, setSemestres] = useState([]);
+
+  useEffect(() => {
+  async function fetchSemestres(id_disciplina = "", id_professor = "") {
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    const response = await fetch("http://127.0.0.1:5000/fetch_semestres", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        disciplina_id: id_disciplina,
+        professor_id: id_professor,
+      }),
+    });
+
+    const data = await response.json();
+    setSemestres(data.data)
+    console.log(semestres)
+  }
+  fetchSemestres()
+  },[]);
+
+    return (
+      <select className="custom-select" defaultValue="Selecione um Semestre">
+        {semestres.map((item) => (
+          <option className="custom-option" value={item.nome}>{item.nome}</option>
+        ))}
+      </select>
+    );
+  }
+export default CaixaSemestres

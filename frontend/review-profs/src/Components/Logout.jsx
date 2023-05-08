@@ -1,6 +1,8 @@
 import React from "react";
 import Cookies from "js-cookie";
 
+import "../Styles/Logout.css"
+
 const Logout = _ => {
     async function handleLogout() {
         var session = Cookies.get("session")

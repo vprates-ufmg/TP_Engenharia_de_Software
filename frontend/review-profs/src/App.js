@@ -7,7 +7,9 @@ import LoginIcon from "./Images/login-icon.png"
 import Form from "./Pages/Forms/Form"
 import CaixaDisciplinas from "./Components/CaixaDisciplinas"
 import CaixaProfessores from "./Components/CaixaProfessores"
-import LandingPage from "./Pages/LandingPage.jsx"
+import CaixaSemestres from "./Components/CaixaSemestres"
+import Home from "./Pages/Home"
+import LandingPage from "./Pages/LandingPage"
 function App() {
   return (
     <Router>
@@ -51,6 +53,8 @@ function App() {
           />} />
           <Route exact path='/disciplinas' element={<CaixaDisciplinas></CaixaDisciplinas>}></Route>
           <Route exact path='/professores' element={<CaixaProfessores></CaixaProfessores>}></Route>
+          <Route exact path='/semestres' element={<CaixaSemestres></CaixaSemestres>}></Route>
+          <Route exact path='/home' element={<Home></Home>}></Route>
       </Routes>
     </Router>
   )
