@@ -44,6 +44,9 @@ const WriteReview = props => {
             });
             let data = await response.json()
             alert(data.message)
+            if(data.success) {
+                window.location.reload(true)
+            }
         } catch (error) {
             alert(error.message);
         }
