@@ -20,7 +20,6 @@ const CaixaSemestres = _ => {
 
     const data = await response.json();
     setSemestres(data.data)
-    console.log(data)
   }
   fetchSemestres()
   },[]);

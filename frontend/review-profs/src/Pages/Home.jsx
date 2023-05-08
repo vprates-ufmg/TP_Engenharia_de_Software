@@ -52,7 +52,7 @@ const Home = _ => {
             });
 
             const data = await response.json();
-            setDisciplinas(data.data);
+            setDisciplinas([{"id": 0, nome: ""}].concat(data.data));
         }
         async function fetchProfessores(id_disciplina = "") {
             const headers = new Headers();
@@ -64,7 +64,7 @@ const Home = _ => {
             });
 
             const data = await response.json();
-            setProfessores(data.data)
+            setProfessores([{"id": 0, nome: ""}].concat(data.data))
         }
         async function fetchSemestres(id_disciplina = "", id_professor = "") {
             const headers = new Headers();
@@ -79,7 +79,7 @@ const Home = _ => {
             });
 
             const data = await response.json();
-            setSemestres(data.data)
+            setSemestres([{"id": 0, nome: ""}].concat(data.data))
         }
         fetchDisciplinas()
         fetchProfessores()
