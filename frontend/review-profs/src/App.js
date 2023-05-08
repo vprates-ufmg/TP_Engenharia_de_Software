@@ -6,6 +6,7 @@ import LoginIcon from "./Images/login-icon.png"
 
 import Form from "./Pages/Forms/Form"
 import CaixaDisciplinas from "./Components/CaixaDisciplinas"
+import CaixaProfessores from "./Components/CaixaProfessores"
 import LandingPage from "./Pages/LandingPage.jsx"
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           aText="Faça Login"
           />} />
           <Route exact path='/disciplinas' element={<CaixaDisciplinas></CaixaDisciplinas>}></Route>
+          <Route exact path='/professores' element={<CaixaProfessores></CaixaProfessores>}></Route>
       </Routes>
     </Router>
   )
