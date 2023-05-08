@@ -5,6 +5,7 @@ import RegisterIcon from "./Images/register-icon.png";
 import LoginIcon from "./Images/login-icon.png"
 
 import Form from "./Pages/Forms/Form"
+import CaixaDisciplinas from "./Components/CaixaDisciplinas"
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           pText="Já possui conta? "
           aText="Faça Login"
           />} />
+          <Route exact path='/disciplinas' element={<CaixaDisciplinas></CaixaDisciplinas>}></Route>
       </Routes>
     </Router>
   )
