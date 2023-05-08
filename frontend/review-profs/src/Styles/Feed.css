@@ -7,8 +7,9 @@
 
 h1 {
     color: white;
-    margin-bottom: 10px;
-    padding-left: 20px;
+    font-size: 32pt;
+    margin: 20px 0;
+    margin-left: 20px;
 }
 
 hr {

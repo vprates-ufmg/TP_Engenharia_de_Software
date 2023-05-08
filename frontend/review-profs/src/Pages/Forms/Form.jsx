@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 
 import Hash from "../../Services/Hash";
-import Logout from "../../Components/Logout";
 
 import '../../Styles/Forms.css'
 
@@ -41,9 +40,9 @@ const Form = props => {
     }
 
     return (
-        <div className="wrapper">
+        <div className="form-wrapper">
             <div className="form-box">
-                <div className="header">
+                <div className="form-header">
                     <img src={props.image} alt={props.imageAlt} />
                     <p>Profs' Review - {props.pageType}</p>
                 </div>
@@ -79,8 +78,6 @@ const Form = props => {
                     </form>
                 </div>
             </div>
-            <Logout />
-
         </div>
     )
 }

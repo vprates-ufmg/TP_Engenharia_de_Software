@@ -1,4 +1,4 @@
-.wrapper {
+.form-wrapper {
     background: linear-gradient(107.56deg, #180037 0%, #003016 100%);
     width: 100vw;
     height: 100vh;
@@ -34,7 +34,7 @@ span.error {
 }
 
 
-.form-box .header {
+.form-box .form-header {
     display: flex;
 
     align-items: center;
@@ -46,7 +46,7 @@ span.error {
 
 }
 
-.form-box .header>img {
+.form-box .form-header>img {
     max-width: 10vw;
     border-radius: 20%;
 }
@@ -55,7 +55,7 @@ p:first-of-type {
     margin-block-end: 2em;
 }
 
-.form-box .header>p {
+.form-box .form-header>p {
     color: white;
     font-size: 24pt;
     margin-top: 0.5em;
