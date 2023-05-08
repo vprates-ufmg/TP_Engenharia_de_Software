@@ -183,39 +183,50 @@ async def fetch_disciplinas():
     return asdict(SimpleResponse(True, "Disciplinas obtidas com sucesso.", d)), 200
 
 
-@app.route("/fetch_professores", methods=["GET"])
+@app.route("/fetch_professores", methods=["POST"])
 @route_cors(allow_origin="*")
 async def fetch_professores():
-    """Retorna os professores que deram a disciplina "disciplina_id" do banco de dados."""
-    data = await request.json
+    """
+    Retorna todos os professores. Se "disciplina_id" for providenciado,
+    retorna os professores que ofertaram tal disciplina.
+    """
+    data = await request.get_json(silent=True)
     if data is None:
         return bad_request()
 
     disciplina_id = data.get("disciplina_id", "")
     if not disciplina_id:
-        return bad_request()
+        professores = await Professor.find({}).to_list()
+        d = [SimpleData(p.uid_professor, p.nome) for p in professores]
+        return asdict(SimpleResponse(True, "Professores obtidos com sucesso.", d)), 200
+    else:
+        turmas_da_disciplina = await Turma.find(Turma.id_disciplina == disciplina_id).to_list()
+        professores_ids = [t.uid_professor_ministrante for t in turmas_da_disciplina]
 
-    turmas_da_disciplina = await Turma.find(Turma.id_disciplina == disciplina_id).to_list()
-    professores_ids = [t.uid_professor_ministrante for t in turmas_da_disciplina]
+        professores = await Professor.find(In(Professor.uid_professor, professores_ids)).to_list()
+        p = [SimpleData(p.uid_professor, p.nome) for p in professores]
 
-    professores = await Professor.find(In(Professor.uid_professor, professores_ids)).to_list()
-    p = [SimpleData(p.uid_professor, p.nome) for p in professores]
-
-    return asdict(SimpleResponse(True, "Professores obtidos com sucesso.", p)), 200
+        return asdict(SimpleResponse(True, "Professores obtidos com sucesso.", p)), 200
 
 
-@app.route("/fetch_semestres", methods=["GET"])
+@app.route("/fetch_semestres", methods=["POST"])
 @route_cors(allow_origin="*")
 async def fetch_semestres():
-    """Retorna os semestres que o professor "professor_id" deu a disciplina "disciplina_id" do banco de dados."""
-    data = await request.json
+    """
+    Retorna todos os semestres.
+    Se "professor_id" e "disciplina_id" forem providenciados,
+    retorna os semestres que o professor deu a disciplina.
+    """
+    data = await request.get_json(silent=True)
     if data is None:
         return bad_request()
 
     disciplina_id = data.get("disciplina_id", "")
     professor_id = data.get("professor_id", "")
     if not disciplina_id or not professor_id:
-        return bad_request()
+        turmas = await Turma.distinct("semestre")
+        s = [SimpleData(None, s) for s in turmas]
+        return asdict(SimpleResponse(True, "Semestres obtidos com sucesso.", s)), 200
 
     turmas_da_disciplina = await Turma.find(
         Turma.id_disciplina == disciplina_id, Turma.uid_professor_ministrante == professor_id
@@ -308,7 +319,7 @@ async def create_review():
     return asdict(ReviewResponse(True, "Review criado com sucesso!", [review])), 200
 
 
-@app.route("/fetch_review", methods=["GET"])
+@app.route("/fetch_review", methods=["POST"])
 @route_cors(allow_origin="*")
 async def fetch_review():
     """
@@ -446,7 +457,7 @@ async def upvote_review():
         await user.save()
         await review.save()
 
-    return asdict(GenericResponse(True, "Upvote computado com sucesso."))
+    return asdict(GenericResponse(True, "Upvote computado com sucesso.")), 200
 
 
 @app.route("/downvote_review", methods=["POST"])
@@ -499,7 +510,7 @@ async def downvote_review():
         await user.save()
         await review.save()
 
-    return asdict(GenericResponse(True, "Downvote computado com sucesso."))
+    return asdict(GenericResponse(True, "Downvote computado com sucesso.")), 200
 
 
 if __name__ == "__main__":
