@@ -28,10 +28,10 @@ FETCH REVIEW
 .sort-by {
     position: absolute;
     right: 20px;
-    font-size: 10pt;
-    margin: 2px 0 0;
-    padding: 0;
-    width: auto;
+    font-size: 10pt !important;
+    margin: 2px 0 0 !important;
+    padding: 0 !important;
+    width: auto !important;
     color: white;
     display: flex;
     align-items: center;
