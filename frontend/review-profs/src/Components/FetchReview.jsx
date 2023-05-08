@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import SortingMethod from "./SortingMethod"
 
 import "../Styles/FetchReview.css"
 
@@ -8,15 +7,32 @@ const FetchReview = _ => {
 
   const [reviews, setReviews] = useState([]);
 
+  let [selectedIndex, setSelectedIndex] = useState(0);
+  
+    const options =[
+      { value: "0", label: "Mais Novos" },
+      { value: "1", label: "Mais Antigos" },
+      { value: "2", label: "Melhores Avaliados" },
+      { value: "3", label: "Piores Avaliados" }
+    ]
+
+  const handleSelectChange = event => {
+    setSelectedIndex(parseInt(event.target.value));
+  };
+  
   useEffect(() => {
     async function fetchReview() {
       const headers = new Headers();
+      let body = JSON.stringify({
+        "sorting": selectedIndex,
+      })
+      console.log(body)
       headers.append("Content-Type", "application/json");
       const response = await fetch("http://127.0.0.1:5000/fetch_review", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
-          "sorting": 0,
+          "sorting": selectedIndex,
         }),
       });
 
@@ -30,11 +46,17 @@ const FetchReview = _ => {
       setReviews(data.data)
     }
     fetchReview()
-  }, []);
+  }, [selectedIndex]);
 
   return (
     <div className="relative">
-      <div className="sort-by"><SortingMethod></SortingMethod></div>
+      <div className="sort-by">
+        <select className="sort-by custom-select" value={selectedIndex} onChange={handleSelectChange}>
+          {options.map((option, index) => (
+            <option className="custom-option" key={option.value} value={index}>{option.label}</option>
+          ))}
+        </select>
+      </div>
       {reviews.map((item) => (
         <div className="reviews" key={item.review_id}>
           <div className="author-row">
