@@ -8,6 +8,8 @@ import Form from "./Pages/Forms/Form"
 import CaixaDisciplinas from "./Components/CaixaDisciplinas"
 import CaixaProfessores from "./Components/CaixaProfessores"
 import CaixaSemestres from "./Components/CaixaSemestres"
+import FetchReview from "./Components/FetchReview"
+import CreateReview from "./Components/CreateReview"
 import Home from "./Pages/Home"
 import LandingPage from "./Pages/LandingPage"
 function App() {
@@ -55,6 +57,8 @@ function App() {
           <Route exact path='/professores' element={<CaixaProfessores></CaixaProfessores>}></Route>
           <Route exact path='/semestres' element={<CaixaSemestres></CaixaSemestres>}></Route>
           <Route exact path='/home' element={<Home></Home>}></Route>
+          <Route exact path='/create_review' element={<CreateReview></CreateReview>}></Route>
+          <Route exact path='/fetch_review' element={<FetchReview></FetchReview>}></Route>
       </Routes>
     </Router>
   )

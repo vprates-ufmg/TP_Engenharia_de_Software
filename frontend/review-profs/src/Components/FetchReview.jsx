@@ -1,37 +1,37 @@
-async function fetchReview(
-  sorting = 1,
-  semestre,
-  id_professor,
-  id_disciplina,
-  range_start = 0,
-  range_end = 15
-) {
-  const headers = new Headers();
-  headers.append("Content-Type", "application/json");
-  const response = await fetch("http://127.0.0.1:5000/fetch_review", {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify({
-      sorting: sorting,
-      semester: semestre,
-      teacher_id: id_professor,
-      disciplina_id: id_disciplina,
-      range_start: range_start,
-      range_end: range_end,
-    }),
-  });
+import React, { useEffect, useState } from "react";
 
-  let data = await response.json();
-  if (!data.success) {
-    alert(data.message);
-    return;
-  }
+const FetchReview = _ => {
+  const [reviews, setReviews] = useState([]);
 
-  items = data.data;
+  useEffect(() => {
+    async function fetchReview(
+      sorting = 1,
+    ) {
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      const response = await fetch("http://127.0.0.1:5000/fetch_review", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          sorting: 1,
+        }),
+      });
+
+      let data = await response.json();
+      console.log(response)
+      console.log(data)
+      if (!data.success) {
+        alert(data.message);
+        return;
+      }
+      setReviews(data.data)
+    }
+    fetchReview()
+  }, []);
 
   return (
     <ul>
-      {items.map((item) => (
+      {reviews.map((item) => (
         <li key={item.review_id}>
           <p>Autor: {item.autor}</p>
           <p>Semestre: {item.semester}</p>
@@ -46,3 +46,5 @@ async function fetchReview(
     </ul>
   );
 }
+
+export default FetchReview
