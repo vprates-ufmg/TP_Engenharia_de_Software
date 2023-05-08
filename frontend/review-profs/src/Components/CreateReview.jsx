@@ -9,7 +9,7 @@ const CreateReview = props => {
         "disciplina_id": '633e1d46-6fb7-43d3-a17c-34a517729c26',
         "is_anonymous": true,
         "content": "muito bom o professor, mas no maximo 500 caracteres",
-        "session": "b021f665-a40e-4f29-b373-8f3e693ce536"
+        "session": "2a5b156a-0292-4151-a07c-6a4b7aeea423"
       }
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
