@@ -233,9 +233,11 @@ async def fetch_semestres():
         s = [SimpleData(None, s) for s in turmas]
         return asdict(SimpleResponse(True, "Semestres obtidos com sucesso.", s)), 200
 
-    turmas_da_disciplina = await Turma.find(
-        Turma.id_disciplina == disciplina_id, Turma.uid_professor_ministrante == professor_id
-    ).sort(("-semestre")).to_list()
+    turmas_da_disciplina = (
+        await Turma.find(Turma.id_disciplina == disciplina_id, Turma.uid_professor_ministrante == professor_id)
+        .sort(("-semestre"))
+        .to_list()
+    )
     semestres = [t.semestre for t in turmas_da_disciplina]
     r = [SimpleData(None, s) for s in semestres]
 
@@ -421,7 +423,6 @@ async def upvote_review():
     O json de requisição deve ter o campo "session" indicando o token de sessão.
     Retorna 403 caso o usuário não estiver logado.
     Retorna 404 caso o review não existir.
-    Retorna 409 se o review já tiver sido upvotado pelo usuário.
     """
     data = await request.json
     if data is None:
@@ -449,7 +450,11 @@ async def upvote_review():
         return asdict(GenericResponse(False, "Review não encontrada.")), 404
 
     if review.id_review in user.upvoted_reviews:
-        return asdict(GenericResponse(False, "Você já deu upvote neste review.")), 409
+        user.upvoted_reviews.remove(review.id_review)
+        review.n_votes -= 1
+        await user.save()
+        await review.save()
+        return asdict(GenericResponse(True, "Upvote desfeito com sucesso.")), 200
     elif review.id_review in user.downvoted_reviews:
         user.downvoted_reviews.remove(review.id_review)
         user.upvoted_reviews.append(review.id_review)
@@ -502,7 +507,11 @@ async def downvote_review():
         return asdict(GenericResponse(False, "Review não encontrada.")), 404
 
     if review.id_review in user.downvoted_reviews:
-        return asdict(GenericResponse(False, "Você já deu downvote neste review.")), 409
+        user.downvoted_reviews.remove(review.id_review)
+        review.n_votes += 1
+        await user.save()
+        await review.save()
+        return asdict(GenericResponse(True, "Downvote desfeito com sucesso.")), 200
     elif review.id_review in user.upvoted_reviews:
         user.upvoted_reviews.remove(review.id_review)
         user.downvoted_reviews.append(review.id_review)
