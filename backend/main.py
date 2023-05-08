@@ -20,6 +20,7 @@ from db.Turma import Turma
 from db.Professor import Professor
 from db.parse_login import create_mongodb_uri
 from motor.motor_asyncio import AsyncIOMotorClient
+from unidecode import unidecode
 import dotenv
 import os
 
@@ -178,8 +179,9 @@ async def logout():
 @route_cors(allow_origin="*")
 async def fetch_disciplinas():
     """Retorna as disciplinas disponíveis no banco de dados"""
-    disciplinas = await Disciplina.find({}).sort(("+nome")).to_list()
-    d = [SimpleData(d.id_disciplina, d.nome) for d in disciplinas]
+    disciplinas = await Disciplina.find({}).to_list()
+    d = [SimpleData(d.id_disciplina, d.nome.strip()) for d in disciplinas]
+    d.sort(key=lambda x: unidecode(x.nome).lower())
     return asdict(SimpleResponse(True, "Disciplinas obtidas com sucesso.", d)), 200
 
 
@@ -196,15 +198,17 @@ async def fetch_professores():
 
     disciplina_id = data.get("disciplina_id", "")
     if not disciplina_id:
-        professores = await Professor.find({}).sort(("+nome")).to_list()
-        d = [SimpleData(p.uid_professor, p.nome) for p in professores]
+        professores = await Professor.find({}).to_list()
+        d = [SimpleData(p.uid_professor, p.nome.strip()) for p in professores]
+        d.sort(key=lambda x: unidecode(x.nome).lower())
         return asdict(SimpleResponse(True, "Professores obtidos com sucesso.", d)), 200
     else:
         turmas_da_disciplina = await Turma.find(Turma.id_disciplina == disciplina_id).to_list()
         professores_ids = [t.uid_professor_ministrante for t in turmas_da_disciplina]
 
-        professores = await Professor.find(In(Professor.uid_professor, professores_ids)).sort(("+nome")).to_list()
-        p = [SimpleData(p.uid_professor, p.nome) for p in professores]
+        professores = await Professor.find(In(Professor.uid_professor, professores_ids)).to_list()
+        p = [SimpleData(p.uid_professor, p.nome.strip()) for p in professores]
+        p.sort(key=lambda x: unidecode(x.nome).lower())
 
         return asdict(SimpleResponse(True, "Professores obtidos com sucesso.", p)), 200
 
