@@ -50,6 +50,29 @@ def bad_request():
     return asdict(GenericResponse(False, "Bad Request")), 400
 
 
+@app.route("/verifica_sessao", methods=["POST"])
+@route_cors(allow_origin="*")
+async def verifica_sessao():
+    """
+    Verifica se a sessão de login é válida.
+    Recebe um json com o campo "session".
+    Retorna 403 se a sessão for inválida.
+    """
+
+    data = await request.json
+    if data is None:
+        return bad_request()
+
+    session_val = data.get("session", "")
+    session = await Session.find({"session_id": session_val}).first_or_none()
+    if session is None:
+        return asdict(GenericResponse(False, "Sessão inválida.")), 403
+    else:
+        if await session.is_expired():
+            return asdict(GenericResponse(False, "Sessão expirada.")), 403
+        return asdict(GenericResponse(False, "Sessão válida.", session.session_id)), 200
+
+
 @app.route("/login", methods=["POST"])
 @route_cors(allow_origin="*")
 async def login():

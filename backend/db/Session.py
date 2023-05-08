@@ -26,6 +26,7 @@ class Session(Document):
         if datetime.utcnow() - datetime_obj > timedelta(days=DAYS_TO_EXPIRE):
             await self.delete_session()
             return True
+        await self.renew()
         return False
 
     async def renew(self):
