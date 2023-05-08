@@ -70,7 +70,7 @@ async def verifica_sessao():
     else:
         if await session.is_expired():
             return asdict(GenericResponse(False, "Sessão expirada.")), 403
-        return asdict(GenericResponse(False, "Sessão válida.", session.session_id)), 200
+        return asdict(GenericResponse(True, "Sessão válida.", session.session_id)), 200
 
 
 @app.route("/login", methods=["POST"])
