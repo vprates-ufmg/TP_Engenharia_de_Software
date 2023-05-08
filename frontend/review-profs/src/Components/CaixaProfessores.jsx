@@ -25,7 +25,7 @@ const CaixaProfessores = _ => {
     return (
       <select className="custom-select" defaultValue="Selecione um(a) Professor(a)">
         {professores.map((item) => (
-          <option className="custom-option" value={item.id}>{item.nome}</option>
+          <option className="custom-option" value={item.id} key={item.id}>{item.nome}</option>
         ))}
       </select>
     );

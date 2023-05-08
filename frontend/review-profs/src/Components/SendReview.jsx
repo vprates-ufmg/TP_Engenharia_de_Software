@@ -7,9 +7,9 @@ const SendReview = _ => {
     return (
         <div className="send-review">
             <div className="toggle-review">
-                <label class="switch">
+                <label className="switch">
                     <input type="checkbox" />
-                    <span class="slider round"></span>
+                    <span className="slider round"></span>
                 </label>
                 <p>Enviar Anônimo?</p>
             </div>

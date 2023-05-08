@@ -21,7 +21,7 @@ const CaixaDisciplinas = _ => {
   return (
     <select className="custom-select" defaultValue="Selecione uma Disciplina">
       {disciplinas.map((disciplina) => (
-        <option className="custom-option" value={disciplina.id}>{disciplina.nome}</option>
+        <option className="custom-option" value={disciplina.id} key={disciplina.id}>{disciplina.nome}</option>
       ))}
     </select>
   );

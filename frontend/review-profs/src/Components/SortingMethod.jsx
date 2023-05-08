@@ -11,7 +11,7 @@ const SortingMethod = _ => {
   return (
     <select className="sort-by custom-select" defaultValue="Selecione uma Disciplina">
       {sorting.map((item) => (
-        <option className="custom-option" value={item}>{item}</option>
+        <option className="custom-option" value={item} key={item}>{item}</option>
       ))}
     </select>
   );

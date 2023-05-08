@@ -28,7 +28,7 @@ const CaixaSemestres = _ => {
     return (
       <select className="custom-select" defaultValue="Selecione um Semestre">
         {semestres.map((item) => (
-          <option className="custom-option" value={item.nome}>{item.nome}</option>
+          <option className="custom-option" value={item.nome} key={item.nome}>{item.nome}</option>
         ))}
       </select>
     );

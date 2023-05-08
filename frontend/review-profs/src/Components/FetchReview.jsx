@@ -85,7 +85,7 @@ const FetchReview = _ => {
     <div className="relative">
       <div className="sort-by"><SortingMethod></SortingMethod></div>
       {items.map((item) => (
-        <div className="reviews" id={item.review_id}>
+        <div className="reviews" key={item.review_id}>
           <div className="author-row">
             <div className="author">Autor: {item.autor}</div>
           </div>
