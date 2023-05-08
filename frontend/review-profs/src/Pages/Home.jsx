@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie";
 
 import '../Styles/Home.css'
 import "../Styles/Feed.css"
@@ -11,6 +12,30 @@ import FetchReview from "../Components/FetchReview";
 import Logout from "../Components/Logout";
 
 const Home = _ => {
+    const navigate = useNavigate();
+    var session = Cookies.get("session")
+    if (session === undefined){
+        session = "";
+    }
+
+    useEffect(() => {
+        async function verificarSessao() {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const response = await fetch('http://127.0.0.1:5000/verifica_sessao', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({session: session})
+        })
+
+        const data = await response.json()
+          if (!data.success) {
+            navigate("/login")
+          }
+        }
+        verificarSessao();
+      }, [navigate, session]);
+
 
     const [disciplinas, setDisciplinas] = useState([]);
     const [professores, setProfessores] = useState([]);

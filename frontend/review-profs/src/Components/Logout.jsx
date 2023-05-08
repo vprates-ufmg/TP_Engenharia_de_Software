@@ -1,9 +1,11 @@
 import React from "react";
 import Cookies from "js-cookie";
+import { useNavigate } from 'react-router-dom';
 
 import "../Styles/Logout.css"
 
 const Logout = _ => {
+    const navigate = useNavigate();
     async function handleLogout() {
         var session = Cookies.get("session")
         if (session === undefined){
@@ -21,6 +23,7 @@ const Logout = _ => {
         const data = await response.json()
         Cookies.remove("session")
         alert(data.message)
+        navigate("/login")
 
       };
 
