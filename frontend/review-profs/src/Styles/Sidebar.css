@@ -21,6 +21,7 @@
 }
 
 .sidebar hr {
+    border: 0.5px solid white;
     width: 100%;
 }
 
