@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import Sidebar from "../Components/Sidebar";
+import Feed from "../Components/Feed";
 
 import '../Styles/Home.css'
 
@@ -8,10 +9,8 @@ const Home = _ => {
 
     return (
         <div className="wrapper">
-            <div className="sidebar">
-                <Sidebar />
-            </div>
-
+            <Sidebar />
+            <Feed />
         </div>
     )
 }

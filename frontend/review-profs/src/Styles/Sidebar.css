@@ -5,14 +5,14 @@
     align-items: center;
     justify-content: stretch;
 
-    border-right: 2px solid white;
+    border-right: 2px solid rgb(187, 187, 187);
     
     min-height: 100%;
     width: 25%;
 }
 
 .sidebar h2 {
-    font-size: 2.2em;
+    font-size: 2em;
     margin: 10px 0;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .sidebar hr {
-    border: 0.5px solid white;
+    border: 0.5px solid rgb(187, 187, 187);
     width: 100%;
 }
 
@@ -30,9 +30,8 @@
     flex-direction: column;
     width: 100%;
     margin: 0;
-    justify-self: flex-start;
     height: 85%;
-    justify-items: flex-start;
+    text-align:center;
 }
 
 .bottom {

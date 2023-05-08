@@ -1,0 +1,16 @@
+.feed {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    color: white;
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+hr {
+    width: calc(100% - 2px);
+}

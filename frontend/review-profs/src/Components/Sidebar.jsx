@@ -11,7 +11,7 @@ import "../Styles/Sidebar.css"
 const Sidebar = _ => {
 
     return (
-        <>
+        <div className="sidebar">
             <div className="header">
                 <div className="header-container">
                     <h2>Disciplina:</h2>
@@ -28,7 +28,7 @@ const Sidebar = _ => {
             <div className="bottom">
                 <Logout />
             </div>
-        </>
+        </div>
     )
 }
 
