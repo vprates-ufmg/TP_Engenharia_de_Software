@@ -1,0 +1,52 @@
+body {
+    background-color: #172554;
+  }
+  
+.header {
+    display: flex;
+    margin: 20px;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+.login {
+    color: orange;
+}
+
+.register {
+    font-size: 30px;
+    color: orange;
+}
+.main-container{
+    width:50%;
+    text-align: center;
+    color: #fff;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.keypoints{
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.keypoints li {
+    list-style: none;
+
+}
+
+nav {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  nav li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  
+  nav a {
+    color: #333;
+    text-decoration: none;
+  }
