@@ -6,12 +6,10 @@ import LoginIcon from "./Images/login-icon.png"
 
 import Form from "./Pages/Forms/Form"
 import Home from "./Pages/Home"
-import LandingPage from "./Pages/LandingPage"
 function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/landingpage" element={<LandingPage />} />
         <Route exact path='/' element={< Form
           pageType='Login'
           url='http://127.0.0.1:5000/login'
