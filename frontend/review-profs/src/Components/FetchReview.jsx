@@ -56,16 +56,14 @@ const FetchReview = _ => {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    async function fetchReview(
-      sorting = 1,
-    ) {
+    async function fetchReview() {
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
       const response = await fetch("http://127.0.0.1:5000/fetch_review", {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
-          sorting: 1,
+          "sorting": 0,
         }),
       });
 

@@ -17,7 +17,7 @@ const CaixaProfessores = _ => {
       
       const data = await response.json();
       setProfessores(data.data)
-      console.log(professores)
+      console.log(data.data)
     }
     fetchProfessores()
     },[]);

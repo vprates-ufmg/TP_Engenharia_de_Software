@@ -13,7 +13,7 @@ const CaixaDisciplinas = _ => {
 
       const data = await response.json();
       setDisciplinas(data.data);
-      console.log(disciplinas)
+      console.log(data)
     }
     fetchDisciplinas();
   }, []);

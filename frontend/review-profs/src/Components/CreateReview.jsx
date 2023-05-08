@@ -5,11 +5,11 @@ const CreateReview = props => {
     async function createReview() {
       let review = {
         "semester": "2021/2",
-        "teacher_id": "120526b0-9a0a-498c-acae-8d25a98d03e1",
-        "disciplina_id": "f0fc331b-1bb7-4978-91c6-ffff45141658",
-        "is_anonymous": false,
+        "teacher_id": 'df90e7ba-23ce-4b5a-85a6-2600217503b4',
+        "disciplina_id": '633e1d46-6fb7-43d3-a17c-34a517729c26',
+        "is_anonymous": true,
         "content": "muito bom o professor, mas no maximo 500 caracteres",
-        "session": "2a5b156a-0292-4151-a07c-6a4b7aeea423"
+        "session": "b021f665-a40e-4f29-b373-8f3e693ce536"
       }
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
