@@ -1,0 +1,14 @@
+.custom-select {
+    background: none;
+    color: white;
+    border: 2px solid white;
+    border-radius: 8px;
+    font-size: 20pt;
+    text-align: center;
+    outline: none;
+    width: 95%;
+}
+
+.custom-option {
+    color: black;
+}

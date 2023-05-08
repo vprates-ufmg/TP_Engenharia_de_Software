@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import "../Styles/Select.css"
+
 const CaixaDisciplinas = _ => {
   const [disciplinas, setDisciplinas] = useState([]);
 
@@ -17,9 +19,9 @@ const CaixaDisciplinas = _ => {
   }, []);
 
   return (
-    <select defaultValue="Selecione uma Disciplina">
+    <select className="custom-select" defaultValue="Selecione uma Disciplina">
       {disciplinas.map((disciplina) => (
-        <option value={disciplina.id}>{disciplina.nome}</option>
+        <option className="custom-option" value={disciplina.id}>{disciplina.nome}</option>
       ))}
     </select>
   );
