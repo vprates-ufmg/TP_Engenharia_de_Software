@@ -3,6 +3,7 @@ import React from "react";
 import "../Styles/Feed.css"
 
 import WriteReview from "./WriteReview";
+import FetchReview from "./FetchReview";
 
 const Feed = _ => {
 
@@ -13,6 +14,7 @@ const Feed = _ => {
             <WriteReview></WriteReview>
             <h1>Reviews de Profs</h1>
             <hr />
+            <FetchReview></FetchReview>
         </div>
     )
 }

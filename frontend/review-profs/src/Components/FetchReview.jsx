@@ -1,6 +1,58 @@
 import React, { useEffect, useState } from "react";
 
+import SortingMethod from "./SortingMethod"
+
+import "../Styles/FetchReview.css"
+
 const FetchReview = _ => {
+
+  const items = [
+    {
+      review_id: 1,
+      autor: "John Smith",
+      semester: "Fall 2022",
+      professor: "Dr. Jane Doe",
+      disciplina: "Introduction to Computer Science",
+      time: "2022-10-01 14:30:00",
+      votes: 10,
+      content:
+        "Dr. Jane Doe is an amazing professor! She explains concepts very clearly and is always willing to answer questions. The assignments were challenging but rewarding. I highly recommend this course.",
+    },
+    {
+      review_id: 2,
+      autor: "Jane Johnson",
+      semester: "Spring 2022",
+      professor: "Dr. John Smith",
+      disciplina: "Advanced Calculus",
+      time: "2022-03-15 09:00:00",
+      votes: 5,
+      content:
+        "Dr. John Smith is a great professor! He is very knowledgeable and passionate about the subject. The lectures were engaging and the homework was fair. I learned a lot in this course.",
+    },
+    {
+      review_id: 3,
+      autor: "Bob Brown",
+      semester: "Fall 2021",
+      professor: "Dr. Alice Green",
+      disciplina: "Intro to Psychology",
+      time: "2021-11-10 16:45:00",
+      votes: 2,
+      content:
+        "Dr. Alice Green is a good professor, but the course was not very interesting. The material was presented in a dry and unengaging way. The exams were fair, but I didn't feel like I learned much.",
+    },
+    {
+      review_id: 4,
+      autor: "Bob Brown",
+      semester: "Fall 2021",
+      professor: "Dr. Alice Green",
+      disciplina: "Intro to Psychology",
+      time: "2021-11-10 16:45:00",
+      votes: 2,
+      content:
+        "Dr. Alice Green is a good professor, but the course was not very interesting. The material was presented in a dry and unengaging way. The exams were fair, but I didn't feel like I learned much.",
+    },
+  ];
+
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
@@ -30,20 +82,31 @@ const FetchReview = _ => {
   }, []);
 
   return (
-    <ul>
-      {reviews.map((item) => (
-        <li key={item.review_id}>
-          <p>Autor: {item.autor}</p>
-          <p>Semestre: {item.semester}</p>
-          <p>Professor(a): {item.professor}</p>
-          <p>Disciplina: {item.disciplina}</p>
-          <p>Hora de postagem: {item.time}</p>
-          <p>Votos: {item.votes}</p>
-          <p>Conteúdo: {item.content}</p>
-          <p>ID: {item.review_id}</p>
-        </li>
+    <div className="relative">
+      <div className="sort-by"><SortingMethod></SortingMethod></div>
+      {items.map((item) => (
+        <div className="reviews" id={item.review_id}>
+          <div className="author-row">
+            <div className="author">Autor: {item.autor}</div>
+          </div>
+          <hr />
+          <div className="class-taken author-row">
+            Turma: {item.disciplina} | {item.professor} | {item.semester}
+          </div>
+          <div className="review-body">
+            {item.content}
+          </div>
+          <div className="bottom-review">
+            <p>@review feito em {item.time}</p>
+            <div>
+              <button>↑</button>
+              {item.votes}
+            </div>
+          </div>
+          <hr />
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
 

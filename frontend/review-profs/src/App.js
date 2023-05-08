@@ -57,6 +57,7 @@ function App() {
           <Route exact path='/professores' element={<CaixaProfessores></CaixaProfessores>}></Route>
           <Route exact path='/semestres' element={<CaixaSemestres></CaixaSemestres>}></Route>
           <Route exact path='/home' element={<Home></Home>}></Route>
+          <Route exact path='/feed' element={<Home></Home>}></Route>
           <Route exact path='/create_review' element={<CreateReview></CreateReview>}></Route>
           <Route exact path='/fetch_review' element={<FetchReview></FetchReview>}></Route>
       </Routes>

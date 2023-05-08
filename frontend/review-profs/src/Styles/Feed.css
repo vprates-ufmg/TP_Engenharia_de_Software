@@ -1,8 +1,11 @@
 .feed {
-    width: 100%;
+    max-width: calc(75% - 2px);
 
     display: flex;
     flex-direction: column;
+
+    margin-left: 25%;
+
 }
 
 h1 {
